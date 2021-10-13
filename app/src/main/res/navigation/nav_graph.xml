@@ -7,6 +7,7 @@
 
     <fragment
         android:id="@+id/PasswordFragment"
+        android:label="@string/app_name"
         android:name="com.example.safenotepad.PasswordFragment"
         tools:layout="@layout/fragment_password">
 
@@ -16,6 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/NotesFragment"
+        android:label="@string/app_name"
         android:name="com.example.safenotepad.NotesFragment"
         tools:layout="@layout/fragment_notes">
         <action
@@ -27,10 +29,20 @@
     </fragment>
     <fragment
         android:id="@+id/editNoteFragment"
+        android:label="@string/edit_note"
         android:name="com.example.safenotepad.EditNoteFragment"
-        tools:layout="@layout/fragment_edit_note" />
+        tools:layout="@layout/fragment_edit_note" >
+        <action
+            android:id="@+id/action_editNoteFragment_to_NotesFragment"
+            app:destination="@id/NotesFragment" />
+    </fragment>
     <fragment
         android:id="@+id/changePasswordFragment"
+        android:label="@string/change_password"
         android:name="com.example.safenotepad.ChangePasswordFragment"
-        tools:layout="@layout/fragment_change_password" />
+        tools:layout="@layout/fragment_change_password" >
+        <action
+            android:id="@+id/action_changePasswordFragment_to_NotesFragment"
+            app:destination="@id/NotesFragment" />
+    </fragment>
 </navigation>
