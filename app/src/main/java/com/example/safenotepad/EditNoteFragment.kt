@@ -5,13 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
-import com.example.safenotepad.databinding.FragmentNotesBinding
+import com.example.safenotepad.databinding.FragmentEditNoteBinding
 
-
-class NotesFragment : Fragment() {
-
-    private var _binding: FragmentNotesBinding? = null
+class EditNoteFragment : Fragment() {
+    private var _binding: FragmentEditNoteBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,7 +19,7 @@ class NotesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentNotesBinding.inflate(inflater, container, false)
+        _binding = FragmentEditNoteBinding.inflate(inflater, container, false)
         return binding.root
 
     }
@@ -30,12 +27,7 @@ class NotesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.buttonEditNote.setOnClickListener {
-            findNavController().navigate(R.id.action_NotesFragment_to_editNoteFragment)
-        }
-
-        binding.buttonChangePassword.setOnClickListener {
-            findNavController().navigate(R.id.action_NotesFragment_to_changePasswordFragment)
+        binding.saveEditButton.setOnClickListener {
         }
     }
 

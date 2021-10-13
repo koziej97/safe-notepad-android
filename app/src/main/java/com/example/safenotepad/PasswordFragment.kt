@@ -23,7 +23,6 @@ class PasswordFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         _binding = FragmentPasswordBinding.inflate(inflater, container, false)
         return binding.root
 
@@ -33,7 +32,7 @@ class PasswordFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonPassword.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+            findNavController().navigate(R.id.action_PasswordFragment_to_NotesFragment)
         }
     }
 

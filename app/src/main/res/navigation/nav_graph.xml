@@ -11,11 +11,26 @@
         tools:layout="@layout/fragment_password">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            android:id="@+id/action_PasswordFragment_to_NotesFragment"
             app:destination="@id/NotesFragment" />
     </fragment>
     <fragment
         android:id="@+id/NotesFragment"
         android:name="com.example.safenotepad.NotesFragment"
-        tools:layout="@layout/fragment_notes"/>
+        tools:layout="@layout/fragment_notes">
+        <action
+            android:id="@+id/action_NotesFragment_to_editNoteFragment"
+            app:destination="@id/editNoteFragment" />
+        <action
+            android:id="@+id/action_NotesFragment_to_changePasswordFragment"
+            app:destination="@id/changePasswordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editNoteFragment"
+        android:name="com.example.safenotepad.EditNoteFragment"
+        tools:layout="@layout/fragment_edit_note" />
+    <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="com.example.safenotepad.ChangePasswordFragment"
+        tools:layout="@layout/fragment_change_password" />
 </navigation>
