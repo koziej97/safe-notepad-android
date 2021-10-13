@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/PasswordFragment">
+
+    <fragment
+        android:id="@+id/PasswordFragment"
+        android:name="com.example.safenotepad.PasswordFragment"
+        tools:layout="@layout/fragment_password">
+
+        <action
+            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            app:destination="@id/NotesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/NotesFragment"
+        android:name="com.example.safenotepad.NotesFragment"
+        tools:layout="@layout/fragment_notes"/>
+</navigation>
