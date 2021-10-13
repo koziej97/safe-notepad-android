@@ -12,4 +12,5 @@
     <string name="save_cahnges">Save changes</string>
     <string name="save_changes">Save changes</string>
     <string name="message_change_password">Please enter your new password below</string>
+    <string name="new_password">New password</string>
 </resources>
