@@ -2,10 +2,12 @@ package com.example.safenotepad
 
 import android.content.Context
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
@@ -27,6 +29,9 @@ class NotesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
+        val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
+        actionBar?.show()
+
         _binding = FragmentNotesBinding.inflate(inflater, container, false)
         return binding.root
 
@@ -39,16 +44,19 @@ class NotesFragment : Fragment() {
             notesFragment = this@NotesFragment
         }
 
+        //Hide back arrow form ActionBar
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
         noteText.value = loadData()
 
         binding.buttonEditNote.setOnClickListener {
-
             findNavController().navigate(R.id.action_NotesFragment_to_editNoteFragment)
         }
 
         binding.buttonChangePassword.setOnClickListener {
             findNavController().navigate(R.id.action_NotesFragment_to_changePasswordFragment)
         }
+
     }
 
     override fun onDestroyView() {
@@ -64,4 +72,5 @@ class NotesFragment : Fragment() {
         }
         return sharedPreferences?.getString("Note", "")
     }
+
 }

@@ -1,6 +1,5 @@
 package com.example.safenotepad
 
-import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -49,6 +48,7 @@ class PasswordFragment : Fragment() {
                 Toast.makeText(context, "Wrong Password!", Toast.LENGTH_LONG).show()
             }
         }
+
     }
 
     override fun onDestroyView() {
@@ -64,4 +64,5 @@ class PasswordFragment : Fragment() {
         }
         return sharedPreferences?.getString("Password", "")
     }
+
 }
