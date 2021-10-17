@@ -1,3 +1,3 @@
 # Safe Notepad Android App
 
-Notepad secure by few cryptography technics - still in progress.
+Notepad Android App secured by several cryptographic techniques - still in progress.
