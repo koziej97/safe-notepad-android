@@ -13,7 +13,9 @@
 
         <action
             android:id="@+id/action_PasswordFragment_to_NotesFragment"
-            app:destination="@id/NotesFragment" />
+            app:destination="@id/NotesFragment"
+            app:popUpTo="@id/PasswordFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/NotesFragment"

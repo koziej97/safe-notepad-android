@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.databinding.FragmentPasswordBinding
 
@@ -36,13 +37,16 @@ class PasswordFragment : Fragment() {
             passwordFragment = this@PasswordFragment
         }
 
+        val correctPassword = loadData()
+        if (correctPassword == "0000") {
+            Toast.makeText(context, "Default password is: 0000. Please change it in options", Toast.LENGTH_LONG).show()
+        }
+
         binding.buttonPassword.setOnClickListener {
             val typedPasswordString = typedPassword.value
 
-            val correctPassword = loadData()
-
             if (typedPasswordString == correctPassword){
-                findNavController().navigate(R.id.action_PasswordFragment_to_NotesFragment)
+                findNavController().navigate(PasswordFragmentDirections.actionPasswordFragmentToNotesFragment())
             }
             else {
                 Toast.makeText(context, "Wrong Password!", Toast.LENGTH_LONG).show()
