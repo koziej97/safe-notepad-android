@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
@@ -50,11 +51,16 @@ class NotesFragment : Fragment() {
         noteText.value = loadData()
 
         binding.buttonEditNote.setOnClickListener {
-            findNavController().navigate(R.id.action_NotesFragment_to_editNoteFragment)
+            findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToEditNoteFragment())
         }
 
         binding.buttonChangePassword.setOnClickListener {
-            findNavController().navigate(R.id.action_NotesFragment_to_changePasswordFragment)
+            findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToChangePasswordFragment())
+        }
+
+        //close App when press Back Button (clear from Recent Tasks)
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            activity?.finishAndRemoveTask()
         }
 
     }

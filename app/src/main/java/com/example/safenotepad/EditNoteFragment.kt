@@ -48,7 +48,7 @@ class EditNoteFragment : Fragment() {
                 saveData(newNoteString)
             }
 
-            findNavController().navigate(R.id.action_editNoteFragment_to_NotesFragment)
+            findNavController().navigate(EditNoteFragmentDirections.actionEditNoteFragmentToNotesFragment())
         }
     }
 

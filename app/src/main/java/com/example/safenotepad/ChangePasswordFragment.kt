@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
 import com.example.safenotepad.databinding.FragmentChangePasswordBinding
 
 class ChangePasswordFragment : Fragment() {
@@ -41,8 +43,9 @@ class ChangePasswordFragment : Fragment() {
             val newPasswordString = newPassword.value
             if (newPasswordString != null) {
                 saveData(newPasswordString)
+                saveDataEncrypted(newPasswordString)
             }
-            findNavController().navigate(R.id.action_changePasswordFragment_to_NotesFragment)
+            findNavController().navigate(ChangePasswordFragmentDirections.actionChangePasswordFragmentToNotesFragment())
             Toast.makeText(context, "Password changed!", Toast.LENGTH_LONG).show()
         }
 
@@ -58,6 +61,22 @@ class ChangePasswordFragment : Fragment() {
             Context.MODE_PRIVATE
         )
         val editor = sharedPreferences?.edit()
+        editor?.putString("Password", TEXT)
+        editor?.apply()
+    }
+
+    fun saveDataEncrypted(TEXT: String) {
+        val masterKey = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val sharedPreferencesEncrypted = context?.let {
+            EncryptedSharedPreferences.create(
+                "Data",
+                masterKey,
+                it,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
+        }
+        val editor = sharedPreferencesEncrypted?.edit()
         editor?.putString("Password", TEXT)
         editor?.apply()
     }
