@@ -4,7 +4,6 @@ Notepad Android App secured by several cryptographic techniques - still in progr
 
 ### Todo
 
-- [ ] move SharedPreferences and logic from Fragments to ViewModel
 - [ ] add secure to password and notes 
 
 ### Done ✓
@@ -13,3 +12,4 @@ Notepad Android App secured by several cryptographic techniques - still in progr
 - [x] correct navigation beetwen Fragments
   - [x] close App by back button from NotesFragment
   - [x] don't go back to PasswordFragment
+- [x] make a separate class to handle Shared Preferences 
