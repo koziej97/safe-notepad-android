@@ -48,7 +48,9 @@ class NotesFragment : Fragment() {
         //Hide back arrow form ActionBar
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
-        noteText.value = loadData()
+        val sharedPreferencesDataStorage = context?.let { SharedPreferencesDataStorage(it) }
+
+        noteText.value = sharedPreferencesDataStorage?.loadNote()
 
         binding.buttonEditNote.setOnClickListener {
             findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToEditNoteFragment())
@@ -69,14 +71,4 @@ class NotesFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-    fun loadData(): String? {
-        val sharedPreferences =
-            context?.getSharedPreferences("Shared Preferences", AppCompatActivity.MODE_PRIVATE)
-        if (sharedPreferences?.contains("Note") == false){
-            return "Empty note"
-        }
-        return sharedPreferences?.getString("Note", "")
-    }
-
 }

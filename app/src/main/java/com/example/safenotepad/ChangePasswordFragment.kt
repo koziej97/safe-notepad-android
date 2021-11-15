@@ -39,10 +39,12 @@ class ChangePasswordFragment : Fragment() {
             changePasswordFragment = this@ChangePasswordFragment
         }
 
+        val sharedPreferencesDataStorage = context?.let { SharedPreferencesDataStorage(it) }
+
         binding.saveChangeButton.setOnClickListener {
             val newPasswordString = newPassword.value
             if (newPasswordString != null) {
-                saveData(newPasswordString)
+                sharedPreferencesDataStorage?.savePassword(newPasswordString)
                 saveDataEncrypted(newPasswordString)
             }
             findNavController().navigate(ChangePasswordFragmentDirections.actionChangePasswordFragmentToNotesFragment())
@@ -54,15 +56,6 @@ class ChangePasswordFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    fun saveData(TEXT: String) {
-        val sharedPreferences = context?.getSharedPreferences("Shared Preferences",
-            Context.MODE_PRIVATE
-        )
-        val editor = sharedPreferences?.edit()
-        editor?.putString("Password", TEXT)
-        editor?.apply()
     }
 
     fun saveDataEncrypted(TEXT: String) {

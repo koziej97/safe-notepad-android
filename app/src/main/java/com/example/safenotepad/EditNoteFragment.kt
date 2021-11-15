@@ -40,12 +40,14 @@ class EditNoteFragment : Fragment() {
             editNoteFragment = this@EditNoteFragment
         }
 
-        newNote.value = loadData()
+        val sharedPreferencesDataStorage = context?.let { SharedPreferencesDataStorage(it) }
+
+        newNote.value = sharedPreferencesDataStorage?.loadNote()
 
         binding.saveEditButton.setOnClickListener {
             val newNoteString = newNote.value
             if (newNoteString != null) {
-                saveData(newNoteString)
+                sharedPreferencesDataStorage?.saveNote(newNoteString)
             }
 
             findNavController().navigate(EditNoteFragmentDirections.actionEditNoteFragmentToNotesFragment())
@@ -57,21 +59,4 @@ class EditNoteFragment : Fragment() {
         _binding = null
     }
 
-    fun saveData(TEXT: String) {
-        val sharedPreferences = context?.getSharedPreferences("Shared Preferences",
-            Context.MODE_PRIVATE
-        )
-        val editor = sharedPreferences?.edit()
-        editor?.putString("Note", TEXT)
-        editor?.apply()
-    }
-
-    fun loadData(): String? {
-        val sharedPreferences =
-            context?.getSharedPreferences("Shared Preferences", AppCompatActivity.MODE_PRIVATE)
-        if (sharedPreferences?.contains("Note") == false){
-            return "Empty note"
-        }
-        return sharedPreferences?.getString("Note", "")
-    }
 }

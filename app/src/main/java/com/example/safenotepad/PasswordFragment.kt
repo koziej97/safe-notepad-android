@@ -1,6 +1,7 @@
 package com.example.safenotepad
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.databinding.FragmentPasswordBinding
 
@@ -37,7 +37,9 @@ class PasswordFragment : Fragment() {
             passwordFragment = this@PasswordFragment
         }
 
-        val correctPassword = loadData()
+        val sharedPreferencesDataStorage = context?.let { SharedPreferencesDataStorage(it) }
+        val correctPassword = sharedPreferencesDataStorage?.loadPassword()
+
         if (correctPassword == "0000") {
             Toast.makeText(context, "Default password is: 0000. Please change it in options", Toast.LENGTH_LONG).show()
         }
@@ -59,14 +61,4 @@ class PasswordFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-    fun loadData(): String? {
-        val sharedPreferences =
-            context?.getSharedPreferences("Shared Preferences", AppCompatActivity.MODE_PRIVATE)
-        if (sharedPreferences?.contains("Password") == false){
-            return "0000"
-        }
-        return sharedPreferences?.getString("Password", "")
-    }
-
 }
