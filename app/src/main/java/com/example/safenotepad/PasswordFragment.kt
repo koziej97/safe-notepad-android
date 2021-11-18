@@ -68,7 +68,14 @@ class PasswordFragment : Fragment() {
                 val key = salt.let { it1 -> SecurityData.calculateKey(typedPasswordString, it1) }
                 val hashedPassword = key.let { it1 -> SecurityData.hashFromKey(it1) }.trim()
 
+                /*
+                // Doing second hash
+                val key2 = salt.let { it1 -> SecurityData.calculateKey(hashedPassword, it1) }
+                val hashedPassword2 = key2.let { it1 -> SecurityData.hashFromKey(it1) }.trim()
+                 */
+
                 if (hashedPassword == correctPassword){
+                    //mSharedViewModel.hashedPasswordToKey = hashedPassword
                     findNavController().navigate(PasswordFragmentDirections.actionPasswordFragmentToNotesFragment())
                 }
                 else {

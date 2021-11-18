@@ -55,4 +55,9 @@ class MainActivity : AppCompatActivity() {
                 || super.onSupportNavigateUp()
     }
 
+    override fun onPause(){
+        super.onPause()
+        finish()
+    }
+
 }

@@ -57,6 +57,7 @@ class EditNoteFragment : Fragment() {
 
         newNote.value = noteTextDecrypted
 
+
         binding.saveEditButton.setOnClickListener {
             val newNoteString = newNote.value
 
@@ -65,8 +66,8 @@ class EditNoteFragment : Fragment() {
                 encryptedSharedPreferences.saveIv(ivNew)
 
                 val newNoteEncrypted = SecurityData.encrypt(key, newNoteString, ivNew)
-                val newNoteEncryptedTest = Base64.encodeToString(newNoteEncrypted, Base64.DEFAULT).trim()
-                encryptedSharedPreferences.saveNote(newNoteEncryptedTest)
+                val newNoteEncryptedText = Base64.encodeToString(newNoteEncrypted, Base64.DEFAULT).trim()
+                encryptedSharedPreferences.saveNote(newNoteEncryptedText)
             }
 
             findNavController().navigate(EditNoteFragmentDirections.actionEditNoteFragmentToNotesFragment())

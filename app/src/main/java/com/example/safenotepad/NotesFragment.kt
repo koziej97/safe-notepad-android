@@ -53,10 +53,12 @@ class NotesFragment : Fragment() {
         //Hide back arrow form ActionBar
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
+        // initalize Shared Preferences, SecurityData
         val sharedPreferencesDataStorage = context?.let { SharedPreferencesDataStorage(it) }
         val encryptedSharedPreferences = context?.let { EncryptedSharedPreferencesDataStorage(it) }
         val SecurityData = SecurityData()
 
+        // load and decrypt Note
         val noteTextEncrypted = encryptedSharedPreferences?.loadNote()
         val noteTextEncryptedByteArray = Base64.decode(noteTextEncrypted, Base64.DEFAULT)
         val key = SecurityData.calculateKey(mSharedViewModel.correctPassword, mSharedViewModel.salt)
@@ -64,6 +66,7 @@ class NotesFragment : Fragment() {
         val noteTextDecrypted = SecurityData.decrypt(key, noteTextEncryptedByteArray, iv!!)
         noteText.value = noteTextDecrypted
 
+        // button handle
         binding.buttonEditNote.setOnClickListener {
             findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToEditNoteFragment())
         }
