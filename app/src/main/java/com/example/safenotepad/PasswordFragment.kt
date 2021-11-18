@@ -42,9 +42,10 @@ class PasswordFragment : Fragment() {
         }
 
         val sharedPreferencesDataStorage = context?.let { SharedPreferencesDataStorage(it) }
+        val encryptedSharedPreferences = context?.let { EncryptedSharedPreferencesDataStorage(it) }
         val SecurityData = SecurityData()
 
-        var correctPassword = sharedPreferencesDataStorage?.loadPassword()
+        var correctPassword = encryptedSharedPreferences?.loadPassword()
         if (correctPassword != null) {
             mSharedViewModel.correctPassword = correctPassword
         }
@@ -62,7 +63,7 @@ class PasswordFragment : Fragment() {
             if (typedPasswordString != null && correctPassword != "0000"){
 
                 // Doing first hash
-                val salt = sharedPreferencesDataStorage?.loadSalt()
+                val salt = encryptedSharedPreferences?.loadSalt()
                 mSharedViewModel.salt = salt!!
                 val key = salt.let { it1 -> SecurityData.calculateKey(typedPasswordString, it1) }
                 val hashedPassword = key.let { it1 -> SecurityData.hashFromKey(it1) }.trim()

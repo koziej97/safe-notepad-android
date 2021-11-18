@@ -46,13 +46,13 @@ class EditNoteFragment : Fragment() {
         }
 
         val sharedPreferencesDataStorage = context?.let { SharedPreferencesDataStorage(it) }
+        val encryptedSharedPreferences = context?.let { EncryptedSharedPreferencesDataStorage(it) }
         val SecurityData = SecurityData()
 
-
-        val noteTextEncrypted = sharedPreferencesDataStorage?.loadNote()
+        val noteTextEncrypted = encryptedSharedPreferences?.loadNote()
         val noteTextEncryptedByteArray = Base64.decode(noteTextEncrypted, Base64.DEFAULT)
         val key = SecurityData.calculateKey(mSharedViewModel.correctPassword, mSharedViewModel.salt)
-        val iv = sharedPreferencesDataStorage?.loadIv()
+        val iv = encryptedSharedPreferences?.loadIv()
         val noteTextDecrypted = SecurityData.decrypt(key, noteTextEncryptedByteArray, iv!!)
 
         newNote.value = noteTextDecrypted
@@ -62,11 +62,11 @@ class EditNoteFragment : Fragment() {
 
             if (newNoteString != null) {
                 val ivNew = SecurityData.generateIv()
-                sharedPreferencesDataStorage?.saveIv(ivNew)
+                encryptedSharedPreferences.saveIv(ivNew)
 
                 val newNoteEncrypted = SecurityData.encrypt(key, newNoteString, ivNew)
                 val newNoteEncryptedTest = Base64.encodeToString(newNoteEncrypted, Base64.DEFAULT).trim()
-                sharedPreferencesDataStorage?.saveNote(newNoteEncryptedTest)
+                encryptedSharedPreferences.saveNote(newNoteEncryptedTest)
             }
 
             findNavController().navigate(EditNoteFragmentDirections.actionEditNoteFragmentToNotesFragment())

@@ -27,71 +27,54 @@ class EncryptedSharedPreferencesDataStorage(val context: Context)  {
         )
     }
 
-    fun savePasswordEncrypted(TEXT: String) {
+    fun savePassword(TEXT: String) {
         val editor = sharedPreferencesEncrypted.edit()
         editor?.putString("Password", TEXT)
         editor?.apply()
     }
 
-    fun loadPasswordEncrypted(): String? {
-        val sharedPreferences =
-            context.getSharedPreferences("Shared Preferences", AppCompatActivity.MODE_PRIVATE)
-        if (sharedPreferences?.contains("Password") == false){
+    fun loadPassword(): String? {
+        if (!sharedPreferencesEncrypted.contains("Password")){
             return "0000"
         }
-        return sharedPreferences?.getString("Password", "")
+        return sharedPreferencesEncrypted.getString("Password", "")
     }
 
     fun saveNote(TEXT: String) {
-        val sharedPreferences = context.getSharedPreferences("Shared Preferences",
-            Context.MODE_PRIVATE
-        )
-        val editor = sharedPreferences?.edit()
+        val editor = sharedPreferencesEncrypted.edit()
         editor?.putString("Note", TEXT)
         editor?.apply()
     }
 
     fun loadNote(): String? {
-        val sharedPreferences =
-            context.getSharedPreferences("Shared Preferences", AppCompatActivity.MODE_PRIVATE)
-        if (sharedPreferences?.contains("Note") == false){
+        if (!sharedPreferencesEncrypted.contains("Note")){
             return "Empty note"
         }
-        return sharedPreferences?.getString("Note", "")
+        return sharedPreferencesEncrypted.getString("Note", "")
     }
 
     fun saveSalt(salt: ByteArray) {
         val text = Base64.encodeToString(salt, Base64.DEFAULT).trim()
-        val sharedPreferences = context.getSharedPreferences("Shared Preferences",
-            Context.MODE_PRIVATE
-        )
-        val editor = sharedPreferences?.edit()
+        val editor = sharedPreferencesEncrypted.edit()
         editor?.putString("Salt", text)
         editor?.apply()
     }
 
     fun loadSalt(): ByteArray {
-        val sharedPreferences =
-            context.getSharedPreferences("Shared Preferences", AppCompatActivity.MODE_PRIVATE)
-        val text = sharedPreferences?.getString("Salt", "")?.trim()
+        val text = sharedPreferencesEncrypted.getString("Salt", "")?.trim()
         val salt: ByteArray = Base64.decode(text, Base64.DEFAULT)
         return salt
     }
 
     fun saveIv(iv: ByteArray) {
         val text = Base64.encodeToString(iv, Base64.DEFAULT).trim()
-        val sharedPreferences = context.getSharedPreferences("Shared Preferences",
-            Context.MODE_PRIVATE
-        )
-        val editor = sharedPreferences?.edit()
+        val editor = sharedPreferencesEncrypted.edit()
         editor?.putString("IV", text)
         editor?.apply()
     }
 
     fun loadIv(): ByteArray {
-        val sharedPreferences =
-            context.getSharedPreferences("Shared Preferences", AppCompatActivity.MODE_PRIVATE)
-        val text = sharedPreferences?.getString("IV", "")
+        val text = sharedPreferencesEncrypted.getString("IV", "")
         val iv: ByteArray = Base64.decode(text, Base64.DEFAULT)
         return iv
     }

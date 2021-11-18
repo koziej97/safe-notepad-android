@@ -57,10 +57,10 @@ class NotesFragment : Fragment() {
         val encryptedSharedPreferences = context?.let { EncryptedSharedPreferencesDataStorage(it) }
         val SecurityData = SecurityData()
 
-        val noteTextEncrypted = sharedPreferencesDataStorage?.loadNote()
+        val noteTextEncrypted = encryptedSharedPreferences?.loadNote()
         val noteTextEncryptedByteArray = Base64.decode(noteTextEncrypted, Base64.DEFAULT)
         val key = SecurityData.calculateKey(mSharedViewModel.correctPassword, mSharedViewModel.salt)
-        val iv = sharedPreferencesDataStorage?.loadIv()
+        val iv = encryptedSharedPreferences?.loadIv()
         val noteTextDecrypted = SecurityData.decrypt(key, noteTextEncryptedByteArray, iv!!)
         noteText.value = noteTextDecrypted
 

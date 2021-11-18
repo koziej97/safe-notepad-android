@@ -51,15 +51,14 @@ class ChangePasswordFragment : Fragment() {
             if (newPasswordString != null) {
                 // generate salt
                 val salt = SecurityData.generateSalt()
-                // save salt
-                sharedPreferencesDataStorage?.saveSalt(salt)
+                encryptedSharedPreferences?.saveSalt(salt)
 
                 //make key
                 val key = SecurityData.calculateKey(newPasswordString, salt)
                 val hashedPassword = SecurityData.hashFromKey(key).trim()
 
-                sharedPreferencesDataStorage?.savePassword(hashedPassword)
-                encryptedSharedPreferences?.savePasswordEncrypted(hashedPassword)
+                //sharedPreferencesDataStorage?.savePassword(hashedPassword)
+                encryptedSharedPreferences?.savePassword(hashedPassword)
             }
             findNavController().navigate(ChangePasswordFragmentDirections.actionChangePasswordFragmentToNotesFragment())
             Toast.makeText(context, "Password changed!", Toast.LENGTH_LONG).show()
