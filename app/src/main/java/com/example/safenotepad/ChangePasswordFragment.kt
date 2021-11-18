@@ -2,6 +2,8 @@ package com.example.safenotepad
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Base64
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -40,12 +42,24 @@ class ChangePasswordFragment : Fragment() {
         }
 
         val sharedPreferencesDataStorage = context?.let { SharedPreferencesDataStorage(it) }
+        val encryptedSharedPreferences = context?.let { EncryptedSharedPreferencesDataStorage(it) }
+        val SecurityData = SecurityData()
 
         binding.saveChangeButton.setOnClickListener {
             val newPasswordString = newPassword.value
+
             if (newPasswordString != null) {
-                sharedPreferencesDataStorage?.savePassword(newPasswordString)
-                saveDataEncrypted(newPasswordString)
+                // generate salt
+                val salt = SecurityData.generateSalt()
+                // save salt
+                sharedPreferencesDataStorage?.saveSalt(salt)
+
+                //make key
+                val key = SecurityData.calculateKey(newPasswordString, salt)
+                val hashedPassword = SecurityData.hashFromKey(key).trim()
+
+                sharedPreferencesDataStorage?.savePassword(hashedPassword)
+                encryptedSharedPreferences?.savePasswordEncrypted(hashedPassword)
             }
             findNavController().navigate(ChangePasswordFragmentDirections.actionChangePasswordFragmentToNotesFragment())
             Toast.makeText(context, "Password changed!", Toast.LENGTH_LONG).show()
@@ -56,21 +70,5 @@ class ChangePasswordFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    fun saveDataEncrypted(TEXT: String) {
-        val masterKey = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-        val sharedPreferencesEncrypted = context?.let {
-            EncryptedSharedPreferences.create(
-                "Data",
-                masterKey,
-                it,
-                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            )
-        }
-        val editor = sharedPreferencesEncrypted?.edit()
-        editor?.putString("Password", TEXT)
-        editor?.apply()
     }
 }

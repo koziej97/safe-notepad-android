@@ -4,20 +4,36 @@ import android.content.Context
 import android.util.Base64
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import java.util.*
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
+import java.security.SecureRandom
+import javax.crypto.Cipher
+import javax.crypto.SecretKey
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.PBEKeySpec
+import javax.crypto.spec.SecretKeySpec
 
-class SharedPreferencesDataStorage(val context: Context) {
 
-    fun savePassword(TEXT: String) {
-        val sharedPreferences = context.getSharedPreferences("Shared Preferences",
-            Context.MODE_PRIVATE
+class EncryptedSharedPreferencesDataStorage(val context: Context)  {
+    private val masterKey = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+    private val sharedPreferencesEncrypted = context.let {
+        EncryptedSharedPreferences.create(
+            "Data",
+            masterKey,
+            it,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
-        val editor = sharedPreferences?.edit()
-        editor?.putString("Password", TEXT.trim())
+    }
+
+    fun savePasswordEncrypted(TEXT: String) {
+        val editor = sharedPreferencesEncrypted.edit()
+        editor?.putString("Password", TEXT)
         editor?.apply()
     }
 
-    fun loadPassword(): String? {
+    fun loadPasswordEncrypted(): String? {
         val sharedPreferences =
             context.getSharedPreferences("Shared Preferences", AppCompatActivity.MODE_PRIVATE)
         if (sharedPreferences?.contains("Password") == false){
@@ -79,5 +95,4 @@ class SharedPreferencesDataStorage(val context: Context) {
         val iv: ByteArray = Base64.decode(text, Base64.DEFAULT)
         return iv
     }
-
 }
