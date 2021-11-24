@@ -35,7 +35,7 @@ class EncryptedSharedPreferencesDataStorage(val context: Context)  {
 
     fun loadPassword(): String? {
         if (!sharedPreferencesEncrypted.contains("Password")){
-            return "0000"
+            return null
         }
         return sharedPreferencesEncrypted.getString("Password", "")
     }

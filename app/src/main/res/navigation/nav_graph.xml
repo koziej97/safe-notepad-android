@@ -51,4 +51,9 @@
             app:popUpTo="@id/NotesFragment"
             app:popUpToInclusive="true"/>
     </fragment>
+    <fragment
+        android:id="@+id/fingerprintFragment"
+        android:name="com.example.safenotepad.FingerprintFragment"
+        android:label="FingerprintFragment"
+        tools:layout="@layout/fragment_fingerprint"/>
 </navigation>

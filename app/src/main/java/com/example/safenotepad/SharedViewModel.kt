@@ -10,4 +10,7 @@ class SharedViewModel: ViewModel() {
     var newSalt = ByteArray(32)
     var correctPassword = String()
     var newCorrectPassword = String()
+
+    var hashedPasswordForKey = String()
+    var newHashedPasswordForKey = String()
 }

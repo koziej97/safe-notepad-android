@@ -15,6 +15,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
+import javax.crypto.SecretKey
 
 
 class EditNoteFragment : Fragment() {
@@ -49,17 +50,23 @@ class EditNoteFragment : Fragment() {
         val encryptedSharedPreferences = context?.let { EncryptedSharedPreferencesDataStorage(it) }
         val SecurityData = SecurityData()
 
+        // load and decrypt Note
         val noteTextEncrypted = encryptedSharedPreferences?.loadNote()
-        val noteTextEncryptedByteArray = Base64.decode(noteTextEncrypted, Base64.DEFAULT)
-        val key = SecurityData.calculateKey(mSharedViewModel.correctPassword, mSharedViewModel.salt)
-        val iv = encryptedSharedPreferences?.loadIv()
-        val noteTextDecrypted = SecurityData.decrypt(key, noteTextEncryptedByteArray, iv!!)
-
-        newNote.value = noteTextDecrypted
+        if (noteTextEncrypted != "Empty note"){
+            val noteTextEncryptedByteArray = Base64.decode(noteTextEncrypted, Base64.DEFAULT)
+            val key = SecurityData.calculateKey(mSharedViewModel.hashedPasswordForKey, mSharedViewModel.salt)
+            val iv = encryptedSharedPreferences?.loadIv()
+            val noteTextDecrypted = SecurityData.decrypt(key, noteTextEncryptedByteArray, iv!!)
+            newNote.value = noteTextDecrypted
+        }
+        else {
+            newNote.value = noteTextEncrypted
+        }
 
 
         binding.saveEditButton.setOnClickListener {
             val newNoteString = newNote.value
+            val key = SecurityData.calculateKey(mSharedViewModel.hashedPasswordForKey, mSharedViewModel.salt)
 
             if (newNoteString != null) {
                 val ivNew = SecurityData.generateIv()

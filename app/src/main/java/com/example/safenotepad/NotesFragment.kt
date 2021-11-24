@@ -60,11 +60,16 @@ class NotesFragment : Fragment() {
 
         // load and decrypt Note
         val noteTextEncrypted = encryptedSharedPreferences?.loadNote()
-        val noteTextEncryptedByteArray = Base64.decode(noteTextEncrypted, Base64.DEFAULT)
-        val key = SecurityData.calculateKey(mSharedViewModel.correctPassword, mSharedViewModel.salt)
-        val iv = encryptedSharedPreferences?.loadIv()
-        val noteTextDecrypted = SecurityData.decrypt(key, noteTextEncryptedByteArray, iv!!)
-        noteText.value = noteTextDecrypted
+        if (noteTextEncrypted != "Empty note"){
+            val noteTextEncryptedByteArray = Base64.decode(noteTextEncrypted, Base64.DEFAULT)
+            val key = SecurityData.calculateKey(mSharedViewModel.hashedPasswordForKey, mSharedViewModel.salt)
+            val iv = encryptedSharedPreferences?.loadIv()
+            val noteTextDecrypted = SecurityData.decrypt(key, noteTextEncryptedByteArray, iv!!)
+            noteText.value = noteTextDecrypted
+        }
+        else {
+            noteText.value = noteTextEncrypted
+        }
 
         // button handle
         binding.buttonEditNote.setOnClickListener {

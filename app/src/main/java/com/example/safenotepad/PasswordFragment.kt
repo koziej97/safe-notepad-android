@@ -50,17 +50,27 @@ class PasswordFragment : Fragment() {
             mSharedViewModel.correctPassword = correctPassword
         }
         else {
-            correctPassword = "0000"
-        }
-
-        if (correctPassword == "0000"){
+            // ustawianie parametrow dla hasła "0000", gdy nie ma jeszcze żadnego hasła użytkownika
+            val salt = SecurityData.generateSalt()
+            encryptedSharedPreferences?.saveSalt(salt)
+            mSharedViewModel.salt = salt
+            // Doing first hash
+            val key = SecurityData.calculateKey("0000", salt)
+            val hashedPassword = SecurityData.hashFromKey(key).trim()
+            mSharedViewModel.newHashedPasswordForKey = hashedPassword
+            // Doing second hash
+            val key2 = salt.let { it1 -> SecurityData.calculateKey(hashedPassword, it1) }
+            val hashedPassword2 = key2.let { it1 -> SecurityData.hashFromKey(it1) }.trim()
+            mSharedViewModel.correctPassword = hashedPassword2
+            correctPassword = hashedPassword2
+            encryptedSharedPreferences?.savePassword(hashedPassword2)
             Toast.makeText(context, "Default password is: 0000. Please change it in options", Toast.LENGTH_LONG).show()
         }
 
         binding.buttonPassword.setOnClickListener {
             val typedPasswordString = typedPassword.value
 
-            if (typedPasswordString != null && correctPassword != "0000"){
+            if (typedPasswordString != null){
 
                 // Doing first hash
                 val salt = encryptedSharedPreferences?.loadSalt()
@@ -68,27 +78,16 @@ class PasswordFragment : Fragment() {
                 val key = salt.let { it1 -> SecurityData.calculateKey(typedPasswordString, it1) }
                 val hashedPassword = key.let { it1 -> SecurityData.hashFromKey(it1) }.trim()
 
-                /*
                 // Doing second hash
                 val key2 = salt.let { it1 -> SecurityData.calculateKey(hashedPassword, it1) }
                 val hashedPassword2 = key2.let { it1 -> SecurityData.hashFromKey(it1) }.trim()
-                 */
 
-                if (hashedPassword == correctPassword){
-                    //mSharedViewModel.hashedPasswordToKey = hashedPassword
+                if (hashedPassword2 == correctPassword){
+                    mSharedViewModel.hashedPasswordForKey = hashedPassword
                     findNavController().navigate(PasswordFragmentDirections.actionPasswordFragmentToNotesFragment())
                 }
                 else {
                     Toast.makeText(context, "Wrong Password!", Toast.LENGTH_LONG).show()
-                }
-            }
-            else if (typedPasswordString != null){
-                if (typedPasswordString == correctPassword){
-                    findNavController().navigate(PasswordFragmentDirections.actionPasswordFragmentToNotesFragment())
-                }
-                else {
-                    Toast.makeText(context, "Wrong Password!", Toast.LENGTH_SHORT).show()
-                    Toast.makeText(context, "Default password is: 0000. Please change it in options", Toast.LENGTH_LONG).show()
                 }
             }
         }
