@@ -1,14 +1,12 @@
 package com.example.safenotepad
 
 import android.util.Base64
-import android.util.Log
 import java.security.SecureRandom
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.PBEKeySpec
-import kotlin.random.Random.Default.nextBytes
 
 class SecurityData {
     fun encrypt(key: SecretKey, text: String, iv: ByteArray): ByteArray? {

@@ -1,14 +1,13 @@
 package com.example.safenotepad
 
 import android.os.Bundle
-import android.util.Base64
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
@@ -45,27 +44,14 @@ class PasswordFragment : Fragment() {
         val encryptedSharedPreferences = context?.let { EncryptedSharedPreferencesDataStorage(it) }
         val SecurityData = SecurityData()
 
-        var correctPassword = encryptedSharedPreferences?.loadPassword()
+        val correctPassword = encryptedSharedPreferences?.loadPassword()
         if (correctPassword != null) {
             mSharedViewModel.correctPassword = correctPassword
         }
         else {
-            // ustawianie parametrow dla hasła "0000", gdy nie ma jeszcze żadnego hasła użytkownika
-            val salt = SecurityData.generateSalt()
-            encryptedSharedPreferences?.saveSalt(salt)
-            mSharedViewModel.salt = salt
-            // Doing first hash
-            val key = SecurityData.calculateKey("0000", salt)
-            val hashedPassword = SecurityData.hashFromKey(key).trim()
-            mSharedViewModel.newHashedPasswordForKey = hashedPassword
-            // Doing second hash
-            val key2 = salt.let { it1 -> SecurityData.calculateKey(hashedPassword, it1) }
-            val hashedPassword2 = key2.let { it1 -> SecurityData.hashFromKey(it1) }.trim()
-            mSharedViewModel.correctPassword = hashedPassword2
-            correctPassword = hashedPassword2
-            encryptedSharedPreferences?.savePassword(hashedPassword2)
-            Toast.makeText(context, "Default password is: 0000. Please change it in options", Toast.LENGTH_LONG).show()
+            createAlertForFirstPassword()
         }
+
 
         binding.buttonPassword.setOnClickListener {
             val typedPasswordString = typedPassword.value
@@ -82,7 +68,7 @@ class PasswordFragment : Fragment() {
                 val key2 = salt.let { it1 -> SecurityData.calculateKey(hashedPassword, it1) }
                 val hashedPassword2 = key2.let { it1 -> SecurityData.hashFromKey(it1) }.trim()
 
-                if (hashedPassword2 == correctPassword){
+                if (hashedPassword2 == mSharedViewModel.correctPassword){
                     mSharedViewModel.hashedPasswordForKey = hashedPassword
                     findNavController().navigate(PasswordFragmentDirections.actionPasswordFragmentToNotesFragment())
                 }
@@ -97,5 +83,44 @@ class PasswordFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun createAlertForFirstPassword(){
+        val encryptedSharedPreferences = context?.let { EncryptedSharedPreferencesDataStorage(it) }
+        val SecurityData = SecurityData()
+
+        val firstPasswordEditText = EditText(activity)
+        firstPasswordEditText.hint = "Type your password"
+
+        AlertDialog.Builder(requireActivity())
+            .setTitle("Set up your password")
+            .setView(firstPasswordEditText)
+            .setPositiveButton("OK") { _, _ ->
+                var correctPassword = firstPasswordEditText.text.toString()
+
+                if (correctPassword != ""){
+                    val salt = SecurityData.generateSalt()
+                    encryptedSharedPreferences?.saveSalt(salt)
+                    mSharedViewModel.salt = salt
+                    // Doing first hash
+                    val key = salt.let { it1 -> SecurityData.calculateKey(correctPassword, it1) }
+                    val hashedPassword = key.let { it1 -> SecurityData.hashFromKey(it1) }.trim()
+                    // Doing second hash
+                    val key2 = salt.let { it1 -> SecurityData.calculateKey(hashedPassword, it1) }
+                    val hashedPassword2 = key2.let { it1 -> SecurityData.hashFromKey(it1) }.trim()
+                    mSharedViewModel.correctPassword = hashedPassword2
+                    correctPassword = hashedPassword2
+                    encryptedSharedPreferences?.savePassword(hashedPassword2)
+
+                    Toast.makeText(context, "Now type your set password to get access", Toast.LENGTH_LONG).show()
+                }
+                else {
+                    Toast.makeText(context, "You MUST set a password!", Toast.LENGTH_LONG).show()
+                    createAlertForFirstPassword()
+                }
+            }
+            .setCancelable(false)
+            .create()
+            .show()
     }
 }
