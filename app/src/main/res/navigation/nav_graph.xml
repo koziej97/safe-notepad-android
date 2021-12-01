@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/PasswordFragment">
+    app:startDestination="@id/fingerprintFragment">
 
     <fragment
         android:id="@+id/PasswordFragment"
@@ -55,5 +55,9 @@
         android:id="@+id/fingerprintFragment"
         android:name="com.example.safenotepad.FingerprintFragment"
         android:label="FingerprintFragment"
-        tools:layout="@layout/fragment_fingerprint"/>
+        tools:layout="@layout/fragment_fingerprint">
+        <action
+            android:id="@+id/action_fingerprintFragment_to_NotesFragment"
+            app:destination="@id/NotesFragment" />
+    </fragment>
 </navigation>

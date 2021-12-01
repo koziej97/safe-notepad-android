@@ -52,7 +52,7 @@ class ChangePasswordFragment : Fragment() {
                 encryptedSharedPreferences?.saveSalt(salt)
                 mSharedViewModel.newSalt = salt
 
-                // Doing frist hash
+                // Doing first hash
                 val key = SecurityData.calculateKey(newPasswordString, salt)
                 val hashedPassword = SecurityData.hashFromKey(key).trim()
                 mSharedViewModel.newHashedPasswordForKey = hashedPassword

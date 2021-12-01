@@ -12,10 +12,13 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.databinding.FragmentNotesBinding
+import javax.crypto.Cipher
 
 
 class NotesFragment : Fragment() {
@@ -53,6 +56,9 @@ class NotesFragment : Fragment() {
         //Hide back arrow form ActionBar
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        // ENCRYPTION WITH PASSWORD
+        /*
         // initalize Shared Preferences, SecurityData
         val sharedPreferencesDataStorage = context?.let { SharedPreferencesDataStorage(it) }
         val encryptedSharedPreferences = context?.let { EncryptedSharedPreferencesDataStorage(it) }
@@ -70,6 +76,10 @@ class NotesFragment : Fragment() {
         else {
             noteText.value = noteTextEncrypted
         }
+         */
+        ///////////////////////////////////////////////////////////////////////////////////////////
+
+        noteText.value = mSharedViewModel.noteTextShared
 
         // button handle
         binding.buttonEditNote.setOnClickListener {
@@ -77,7 +87,7 @@ class NotesFragment : Fragment() {
         }
 
         binding.buttonChangePassword.setOnClickListener {
-            findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToChangePasswordFragment())
+            //findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToChangePasswordFragment())
         }
 
         //close App when press Back Button (clear from Recent Tasks)
@@ -91,4 +101,5 @@ class NotesFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
 }

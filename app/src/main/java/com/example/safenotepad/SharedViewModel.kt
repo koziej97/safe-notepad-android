@@ -2,6 +2,7 @@ package com.example.safenotepad
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import javax.crypto.Cipher
 import javax.crypto.SecretKey
 import javax.crypto.SecretKeyFactory
 
@@ -13,4 +14,7 @@ class SharedViewModel: ViewModel() {
 
     var hashedPasswordForKey = String()
     var newHashedPasswordForKey = String()
+
+    var noteTextShared = String()
+    lateinit var cipher : Cipher
 }
