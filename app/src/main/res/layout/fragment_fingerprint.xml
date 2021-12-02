@@ -63,6 +63,20 @@
             app:layout_constraintVertical_bias="0.448"
             app:tint="@color/yellow" />
 
+        <TextView
+            android:id="@+id/info_about_biometric"
+            android:layout_width="349dp"
+            android:layout_height="154dp"
+            android:text="@string/info_about_biometric"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            app:layout_constraintVertical_bias="0.617" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

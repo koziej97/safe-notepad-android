@@ -15,7 +15,7 @@ import java.security.SecureRandom
 
 object CryptographyUtil {
     private const val ANDROID_KEYSTORE = "AndroidKeyStore"
-    private const val YOUR_SECRET_KEY_NAME = "Y0UR$3CR3TK3YN@M3"
+    private const val YOUR_SECRET_KEY_NAME = "SecretName"
     private const val KEY_SIZE = 128
     private const val ENCRYPTION_BLOCK_MODE = KeyProperties.BLOCK_MODE_GCM
     private const val ENCRYPTION_PADDING = KeyProperties.ENCRYPTION_PADDING_NONE

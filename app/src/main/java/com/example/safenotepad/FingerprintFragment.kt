@@ -18,6 +18,7 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.databinding.FragmentFingerprintBinding
 import java.util.concurrent.Executor
@@ -34,9 +35,6 @@ class FingerprintFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFingerprintBinding.inflate(inflater, container, false)
-
-
-
         return binding.root
     }
 
@@ -75,7 +73,7 @@ class FingerprintFragment : Fragment() {
     fun showBiometricPrompt(
         title: String = "Biometric Authentication",
         subtitle: String = "Enter biometric credentials to proceed.",
-        description: String = "Input your Fingerprint or FaceID to ensure it's you!",
+        description: String = "Input your Fingerprint to ensure it's you!",
         activity: AppCompatActivity,
         cryptoObject: BiometricPrompt.CryptoObject? = null,
         allowDeviceCredential: Boolean = false
@@ -147,6 +145,7 @@ class FingerprintFragment : Fragment() {
                     val decryptedMessage = CryptographyUtil.decryptData(noteTextEncryptedByteArray, it)
                     mSharedViewModel.noteTextShared = decryptedMessage
                 }
+
                 findNavController().navigate(FingerprintFragmentDirections.actionFingerprintFragmentToNotesFragment())
             }
 

@@ -117,7 +117,7 @@ class EditNoteFragment : Fragment() {
     fun showBiometricPrompt(
         title: String = "Biometric Authentication",
         subtitle: String = "Enter biometric credentials to proceed.",
-        description: String = "Input your Fingerprint or FaceID to ensure it's you!",
+        description: String = "Input your Fingerprint to ensure it's you!",
         activity: AppCompatActivity,
         cryptoObject: BiometricPrompt.CryptoObject? = null,
         allowDeviceCredential: Boolean = false
