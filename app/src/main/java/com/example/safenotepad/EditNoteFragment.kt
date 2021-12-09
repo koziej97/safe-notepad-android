@@ -95,14 +95,10 @@ class EditNoteFragment : Fragment() {
             val newNoteString = newNote.value
 
             if (newNoteString != null) {
-                val cryptoObject = BiometricPrompt.CryptoObject(
-                    CryptographyUtil.getInitializedCipherForEncryption()
-                )
-
-                showBiometricPrompt(
-                    activity = requireActivity() as AppCompatActivity,
-                    cryptoObject = cryptoObject
-                )
+                val cipher = CryptographyUtil.getInitializedCipherForEncryption()
+                encryptAndSave(newNoteString, cipher)
+                mSharedViewModel.noteTextShared = newNoteString
+                findNavController().navigate(EditNoteFragmentDirections.actionEditNoteFragmentToNotesFragment())
             }
 
         }
@@ -112,84 +108,6 @@ class EditNoteFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    fun showBiometricPrompt(
-        title: String = "Biometric Authentication",
-        subtitle: String = "Enter biometric credentials to proceed.",
-        description: String = "Input your Fingerprint to ensure it's you!",
-        activity: AppCompatActivity,
-        cryptoObject: BiometricPrompt.CryptoObject? = null,
-        allowDeviceCredential: Boolean = false
-    ) {
-        // Prepare BiometricPrompt Dialog
-        val promptInfo = setBiometricPromptInfo(
-            title,
-            subtitle,
-            description,
-            allowDeviceCredential
-        )
-
-        // Attach with caller and callback handler
-        val biometricPrompt = initBiometricPrompt(activity)
-
-        // Authenticate with a CryptoObject if provided, otherwise default authentication
-        biometricPrompt.apply {
-            if (cryptoObject == null) authenticate(promptInfo)
-            else authenticate(promptInfo, cryptoObject)
-        }
-    }
-
-    fun setBiometricPromptInfo(
-        title: String,
-        subtitle: String,
-        description: String,
-        allowDeviceCredential: Boolean
-    ): BiometricPrompt.PromptInfo {
-        val builder = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(title)
-            .setSubtitle(subtitle)
-            .setDescription(description)
-
-        // Use Device Credentials if allowed, otherwise show Cancel Button
-        builder.apply {
-            setNegativeButtonText("Cancel")
-        }
-
-        return builder.build()
-    }
-
-    fun initBiometricPrompt(
-        activity: AppCompatActivity,
-    ): BiometricPrompt {
-        // Attach calling Activity
-        val executor = ContextCompat.getMainExecutor(activity)
-
-        // Attach callback handlers
-        val callback = object : BiometricPrompt.AuthenticationCallback() {
-            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                super.onAuthenticationError(errorCode, errString)
-            }
-
-            override fun onAuthenticationFailed() {
-                super.onAuthenticationFailed()
-                Log.w(this.javaClass.simpleName, "Authentication failed for an unknown reason")
-            }
-
-            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                super.onAuthenticationSucceeded(result)
-                result.cryptoObject?.cipher?.let {
-                    val newNoteString = newNote.value
-                    if (newNoteString != null) {
-                        encryptAndSave(newNoteString, it)
-                        mSharedViewModel.noteTextShared = newNoteString
-                    }
-                    findNavController().navigate(EditNoteFragmentDirections.actionEditNoteFragmentToNotesFragment())
-                }
-            }
-        }
-
-        return BiometricPrompt(activity, executor, callback)
     }
 
     private fun encryptAndSave(plainTextMessage: String, cipher: Cipher) {

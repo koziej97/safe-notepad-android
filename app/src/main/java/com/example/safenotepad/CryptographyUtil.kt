@@ -36,7 +36,7 @@ object CryptographyUtil {
             setBlockModes(ENCRYPTION_BLOCK_MODE)
             setEncryptionPaddings(ENCRYPTION_PADDING)
             setKeySize(KEY_SIZE)
-            setUserAuthenticationRequired(true)
+            setUserAuthenticationRequired(false)
         }
 
         // generating key

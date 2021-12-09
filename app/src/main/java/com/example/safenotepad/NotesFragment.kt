@@ -87,7 +87,7 @@ class NotesFragment : Fragment() {
         }
 
         binding.buttonChangePassword.setOnClickListener {
-            //findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToChangePasswordFragment())
+            findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToChangePasswordFragment())
         }
 
         //close App when press Back Button (clear from Recent Tasks)

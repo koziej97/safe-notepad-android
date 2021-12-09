@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.databinding.FragmentChangePasswordBinding
 
 class ChangePasswordFragment : Fragment() {
@@ -64,25 +65,8 @@ class ChangePasswordFragment : Fragment() {
                 //sharedPreferencesDataStorage?.savePassword(hashedPassword)
                 encryptedSharedPreferences?.savePassword(hashedPassword2)
                 mSharedViewModel.newCorrectPassword = hashedPassword2
-
-                //change cipher for note
-                val noteTextEncrypted = encryptedSharedPreferences?.loadNote()
-                val noteTextEncryptedByteArray = Base64.decode(noteTextEncrypted, Base64.DEFAULT)
-                val oldKey = SecurityData.calculateKey(mSharedViewModel.hashedPasswordForKey, mSharedViewModel.salt)
-                val iv = encryptedSharedPreferences?.loadIv()
-                val noteTextDecrypted = SecurityData.decrypt(oldKey, noteTextEncryptedByteArray, iv!!)
-
-                //tworze nowy klucz
-                val newKey = SecurityData.calculateKey(mSharedViewModel.newHashedPasswordForKey, mSharedViewModel.newSalt)
-                val newNoteText = SecurityData.encrypt(newKey, noteTextDecrypted, iv)
-                val newNoteEncryptedText = Base64.encodeToString(newNoteText, Base64.DEFAULT).trim()
-                encryptedSharedPreferences.saveNote(newNoteEncryptedText)
-
             }
-            //findNavController().navigate(ChangePasswordFragmentDirections.actionChangePasswordFragmentToNotesFragment())
-            Toast.makeText(context, "Password changed! Restart App", Toast.LENGTH_LONG).show()
-            // close app
-            activity?.finishAndRemoveTask()
+            findNavController().navigate(ChangePasswordFragmentDirections.actionChangePasswordFragmentToNotesFragment())
         }
 
     }
