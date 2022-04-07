@@ -14,5 +14,5 @@ Notepad Android App secured by several cryptographic techniques - still in progr
 
 ### TODO
 - [ ] clean up the mess (the code is disaster, make functions, move them to Shared View Model, etc)
-- [ ] add biometric log in option
+- [x] add biometric log in option
 - [ ] maybe more Notes? (Recycler View, migrate from Shared Preferences to Room Database)
