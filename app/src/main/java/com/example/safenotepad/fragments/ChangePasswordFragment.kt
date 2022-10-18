@@ -1,14 +1,17 @@
-package com.example.safenotepad
+package com.example.safenotepad.fragments
 
 import android.os.Bundle
-import android.util.Base64
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.fragment.findNavController
+import com.example.safenotepad.data.EncryptedSharedPreferencesDataStorage
+import com.example.safenotepad.cryptography.SecurityData
+import com.example.safenotepad.data.SharedPreferencesDataStorage
+import com.example.safenotepad.SharedViewModel
 import com.example.safenotepad.databinding.FragmentChangePasswordBinding
 
 class ChangePasswordFragment : Fragment() {
@@ -52,7 +55,7 @@ class ChangePasswordFragment : Fragment() {
                 encryptedSharedPreferences?.saveSalt(salt)
                 mSharedViewModel.newSalt = salt
 
-                // Doing frist hash
+                // Doing first hash
                 val key = SecurityData.calculateKey(newPasswordString, salt)
                 val hashedPassword = SecurityData.hashFromKey(key).trim()
                 mSharedViewModel.newHashedPasswordForKey = hashedPassword
@@ -64,25 +67,8 @@ class ChangePasswordFragment : Fragment() {
                 //sharedPreferencesDataStorage?.savePassword(hashedPassword)
                 encryptedSharedPreferences?.savePassword(hashedPassword2)
                 mSharedViewModel.newCorrectPassword = hashedPassword2
-
-                //change cipher for note
-                val noteTextEncrypted = encryptedSharedPreferences?.loadNote()
-                val noteTextEncryptedByteArray = Base64.decode(noteTextEncrypted, Base64.DEFAULT)
-                val oldKey = SecurityData.calculateKey(mSharedViewModel.hashedPasswordForKey, mSharedViewModel.salt)
-                val iv = encryptedSharedPreferences?.loadIv()
-                val noteTextDecrypted = SecurityData.decrypt(oldKey, noteTextEncryptedByteArray, iv!!)
-
-                //tworze nowy klucz
-                val newKey = SecurityData.calculateKey(mSharedViewModel.newHashedPasswordForKey, mSharedViewModel.newSalt)
-                val newNoteText = SecurityData.encrypt(newKey, noteTextDecrypted, iv)
-                val newNoteEncryptedText = Base64.encodeToString(newNoteText, Base64.DEFAULT).trim()
-                encryptedSharedPreferences.saveNote(newNoteEncryptedText)
-
             }
-            //findNavController().navigate(ChangePasswordFragmentDirections.actionChangePasswordFragmentToNotesFragment())
-            Toast.makeText(context, "Password changed! Restart App", Toast.LENGTH_LONG).show()
-            // close app
-            activity?.finishAndRemoveTask()
+            findNavController().navigate(ChangePasswordFragmentDirections.actionChangePasswordFragmentToNotesFragment())
         }
 
     }

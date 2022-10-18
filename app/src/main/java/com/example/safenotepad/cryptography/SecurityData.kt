@@ -1,4 +1,4 @@
-package com.example.safenotepad
+package com.example.safenotepad.cryptography
 
 import android.util.Base64
 import java.security.SecureRandom
@@ -12,7 +12,7 @@ class SecurityData {
     fun encrypt(key: SecretKey, text: String, iv: ByteArray): ByteArray? {
         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
         val ivParams = IvParameterSpec(iv)
-        cipher.init(Cipher.ENCRYPT_MODE, key, ivParams);
+        cipher.init(Cipher.ENCRYPT_MODE, key, ivParams)
         val data = cipher.doFinal(text.toByteArray())
         return data
     }

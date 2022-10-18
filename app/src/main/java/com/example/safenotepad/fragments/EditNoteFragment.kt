@@ -1,6 +1,5 @@
-package com.example.safenotepad
+package com.example.safenotepad.fragments
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,13 +8,13 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.databinding.FragmentEditNoteBinding
 
-import android.content.SharedPreferences
 import android.util.Base64
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
-import javax.crypto.SecretKey
+import com.example.safenotepad.cryptography.CryptographyUtil
+import com.example.safenotepad.data.EncryptedSharedPreferencesDataStorage
+import com.example.safenotepad.SharedViewModel
+import javax.crypto.Cipher
 
 
 class EditNoteFragment : Fragment() {
@@ -46,6 +45,9 @@ class EditNoteFragment : Fragment() {
             editNoteFragment = this@EditNoteFragment
         }
 
+        //////////////////////////////////////////////////////////////////////////////////////////
+        // CODE WORKING WITH PASSWORD
+        /*
         val sharedPreferencesDataStorage = context?.let { SharedPreferencesDataStorage(it) }
         val encryptedSharedPreferences = context?.let { EncryptedSharedPreferencesDataStorage(it) }
         val SecurityData = SecurityData()
@@ -79,11 +81,36 @@ class EditNoteFragment : Fragment() {
 
             findNavController().navigate(EditNoteFragmentDirections.actionEditNoteFragmentToNotesFragment())
         }
+         */
+        ///////////////////////////////////////////////////////////////////////////////////////////
+
+        newNote.value = mSharedViewModel.noteTextShared
+
+        binding.saveEditButton.setOnClickListener {
+            val newNoteString = newNote.value
+
+            if (newNoteString != null) {
+                val cipher = CryptographyUtil.getInitializedCipherForEncryption()
+                encryptAndSave(newNoteString, cipher)
+                mSharedViewModel.noteTextShared = newNoteString
+                findNavController().navigate(EditNoteFragmentDirections.actionEditNoteFragmentToNotesFragment())
+            }
+
+        }
+
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun encryptAndSave(plainTextMessage: String, cipher: Cipher) {
+        val encryptedMessage = CryptographyUtil.encryptData(plainTextMessage, cipher)
+        // Save Encrypted Message
+        val encryptedSharedPreferences = context?.let { EncryptedSharedPreferencesDataStorage(it) }
+        encryptedSharedPreferences?.saveNote(Base64.encodeToString(encryptedMessage, Base64.DEFAULT).trim())
+        encryptedSharedPreferences?.saveIv(cipher.iv)
     }
 
 }

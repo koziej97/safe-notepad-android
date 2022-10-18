@@ -1,6 +1,7 @@
 package com.example.safenotepad
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
@@ -58,6 +59,11 @@ class MainActivity : AppCompatActivity() {
     override fun onPause(){
         super.onPause()
         finish()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startActivity(intent)
     }
 
 }
