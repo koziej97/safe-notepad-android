@@ -7,14 +7,14 @@
 
         <variable
             name="fingerprintFragment"
-            type="com.example.safenotepad.FingerprintFragment" />
+            type="com.example.safenotepad.fragments.FingerprintFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/purple_500"
-        tools:context=".FingerprintFragment">
+        tools:context=".fragments.FingerprintFragment">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/material_card_fingerprint_fragment"

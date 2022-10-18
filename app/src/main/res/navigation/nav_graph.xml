@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/PasswordFragment"
         android:label="@string/app_name"
-        android:name="com.example.safenotepad.PasswordFragment"
+        android:name="com.example.safenotepad.fragments.PasswordFragment"
         tools:layout="@layout/fragment_password">
 
         <action
@@ -20,7 +20,7 @@
     <fragment
         android:id="@+id/NotesFragment"
         android:label="@string/app_name"
-        android:name="com.example.safenotepad.NotesFragment"
+        android:name="com.example.safenotepad.fragments.NotesFragment"
         tools:layout="@layout/fragment_notes">
         <action
             android:id="@+id/action_NotesFragment_to_editNoteFragment"
@@ -32,7 +32,7 @@
     <fragment
         android:id="@+id/editNoteFragment"
         android:label="@string/edit_note"
-        android:name="com.example.safenotepad.EditNoteFragment"
+        android:name="com.example.safenotepad.fragments.EditNoteFragment"
         tools:layout="@layout/fragment_edit_note" >
         <action
             android:id="@+id/action_editNoteFragment_to_NotesFragment"
@@ -43,7 +43,7 @@
     <fragment
         android:id="@+id/changePasswordFragment"
         android:label="@string/change_password"
-        android:name="com.example.safenotepad.ChangePasswordFragment"
+        android:name="com.example.safenotepad.fragments.ChangePasswordFragment"
         tools:layout="@layout/fragment_change_password" >
         <action
             android:id="@+id/action_changePasswordFragment_to_NotesFragment"
@@ -53,7 +53,7 @@
     </fragment>
     <fragment
         android:id="@+id/fingerprintFragment"
-        android:name="com.example.safenotepad.FingerprintFragment"
+        android:name="com.example.safenotepad.fragments.FingerprintFragment"
         android:label="FingerprintFragment"
         tools:layout="@layout/fragment_fingerprint">
         <action
