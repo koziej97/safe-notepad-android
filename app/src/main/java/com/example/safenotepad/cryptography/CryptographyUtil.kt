@@ -1,17 +1,13 @@
-package com.example.safenotepad
+package com.example.safenotepad.cryptography
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import java.lang.Byte.decode
 import java.nio.charset.Charset
 import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
-import javax.crypto.spec.IvParameterSpec
-import android.util.Base64
-import java.security.SecureRandom
 
 object CryptographyUtil {
     private const val ANDROID_KEYSTORE = "AndroidKeyStore"
@@ -21,7 +17,7 @@ object CryptographyUtil {
     private const val ENCRYPTION_PADDING = KeyProperties.ENCRYPTION_PADDING_NONE
     private const val ENCRYPTION_ALGORITHM = KeyProperties.KEY_ALGORITHM_AES
 
-    fun getOrCreateSecretKey(): SecretKey {
+    private fun getOrCreateSecretKey(): SecretKey {
         // if key already exists
         val keyStore = KeyStore.getInstance(ANDROID_KEYSTORE)
         keyStore.load(null) // Keystore must be loaded before it can be accessed
@@ -47,12 +43,16 @@ object CryptographyUtil {
         )
         keyGenerator.init(keyGenParams)
 
-        return keyGenerator.generateKey()
+        val myKey = keyGenerator.generateKey()
+
+        // setting entry password
+        keyStore.setKeyEntry(YOUR_SECRET_KEY_NAME, myKey, null, null)
+
+        return myKey
     }
 
-    fun getCipher(): Cipher {
+    private fun getCipher(): Cipher {
         val transformation = "$ENCRYPTION_ALGORITHM/$ENCRYPTION_BLOCK_MODE/$ENCRYPTION_PADDING"
-
         return Cipher.getInstance(transformation)
     }
 
@@ -60,7 +60,6 @@ object CryptographyUtil {
         val cipher = getCipher()
         val secretKey = getOrCreateSecretKey()
         cipher.init(Cipher.ENCRYPT_MODE, secretKey)
-
         return cipher
     }
 
@@ -74,14 +73,12 @@ object CryptographyUtil {
             secretKey,
             GCMParameterSpec(KEY_SIZE, initializationVector)
         )
-
         return cipher
     }
 
     fun encryptData(plaintext: String, cipher: Cipher): ByteArray? {
-        val ciphertext = cipher
+        return cipher
             .doFinal(plaintext.toByteArray(Charset.forName("UTF-8")))
-        return ciphertext
     }
 
     fun decryptData(ciphertext: ByteArray, cipher: Cipher): String {

@@ -1,18 +1,9 @@
-package com.example.safenotepad
+package com.example.safenotepad.data
 
 import android.content.Context
 import android.util.Base64
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
-import java.security.SecureRandom
-import javax.crypto.Cipher
-import javax.crypto.SecretKey
-import javax.crypto.SecretKeyFactory
-import javax.crypto.spec.IvParameterSpec
-import javax.crypto.spec.PBEKeySpec
-import javax.crypto.spec.SecretKeySpec
 
 
 class EncryptedSharedPreferencesDataStorage(val context: Context)  {

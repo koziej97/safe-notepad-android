@@ -1,10 +1,8 @@
-package com.example.safenotepad
+package com.example.safenotepad.data
 
 import android.content.Context
 import android.util.Base64
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import java.util.*
 
 class SharedPreferencesDataStorage(val context: Context) {
 

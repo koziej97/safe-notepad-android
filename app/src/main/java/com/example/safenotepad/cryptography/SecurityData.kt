@@ -1,4 +1,4 @@
-package com.example.safenotepad
+package com.example.safenotepad.cryptography
 
 import android.util.Base64
 import java.security.SecureRandom

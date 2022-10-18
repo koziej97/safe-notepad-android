@@ -1,24 +1,18 @@
-package com.example.safenotepad
+package com.example.safenotepad.fragments
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Base64
-import android.util.Log
-import android.view.KeyEvent
-import androidx.fragment.app.Fragment
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
+import com.example.safenotepad.SharedViewModel
 import com.example.safenotepad.databinding.FragmentNotesBinding
-import javax.crypto.Cipher
 
 
 class NotesFragment : Fragment() {
@@ -52,6 +46,8 @@ class NotesFragment : Fragment() {
         _binding?.apply {
             notesFragment = this@NotesFragment
         }
+
+        _binding?.note?.movementMethod = ScrollingMovementMethod()
 
         //Hide back arrow form ActionBar
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)

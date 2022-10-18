@@ -1,15 +1,17 @@
-package com.example.safenotepad
+package com.example.safenotepad.fragments
 
 import android.os.Bundle
-import android.util.Base64
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
+import com.example.safenotepad.data.EncryptedSharedPreferencesDataStorage
+import com.example.safenotepad.cryptography.SecurityData
+import com.example.safenotepad.data.SharedPreferencesDataStorage
+import com.example.safenotepad.SharedViewModel
 import com.example.safenotepad.databinding.FragmentChangePasswordBinding
 
 class ChangePasswordFragment : Fragment() {

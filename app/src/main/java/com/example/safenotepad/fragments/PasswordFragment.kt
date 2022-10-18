@@ -1,4 +1,4 @@
-package com.example.safenotepad
+package com.example.safenotepad.fragments
 
 import android.os.Bundle
 import android.util.Base64
@@ -16,6 +16,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
+import com.example.safenotepad.*
+import com.example.safenotepad.cryptography.CryptographyUtil
+import com.example.safenotepad.cryptography.SecurityData
+import com.example.safenotepad.data.EncryptedSharedPreferencesDataStorage
+import com.example.safenotepad.data.SharedPreferencesDataStorage
 import com.example.safenotepad.databinding.FragmentPasswordBinding
 
 class PasswordFragment : Fragment() {
@@ -82,7 +87,8 @@ class PasswordFragment : Fragment() {
                         val iv = encryptedSharedPreferences.loadIv()
                         val cipher = CryptographyUtil.getInitializedCipherForDecryption(iv)
                         val noteTextEncryptedByteArray = Base64.decode(noteTextEncrypted, Base64.DEFAULT)
-                        val decryptedMessage = CryptographyUtil.decryptData(noteTextEncryptedByteArray, cipher)
+                        val decryptedMessage =
+                            CryptographyUtil.decryptData(noteTextEncryptedByteArray, cipher)
                         mSharedViewModel.noteTextShared = decryptedMessage
                     }
                     else {
@@ -229,7 +235,8 @@ class PasswordFragment : Fragment() {
 
                     val noteTextEncrypted = encryptedSharedPreferences?.loadNote()
                     val noteTextEncryptedByteArray = Base64.decode(noteTextEncrypted, Base64.DEFAULT)
-                    val decryptedMessage = CryptographyUtil.decryptData(noteTextEncryptedByteArray, it)
+                    val decryptedMessage =
+                        CryptographyUtil.decryptData(noteTextEncryptedByteArray, it)
                     mSharedViewModel.noteTextShared = decryptedMessage
                 }
 

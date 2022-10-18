@@ -1,6 +1,5 @@
-package com.example.safenotepad
+package com.example.safenotepad.fragments
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,17 +8,13 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.databinding.FragmentEditNoteBinding
 
-import android.content.SharedPreferences
-import android.text.TextUtils
 import android.util.Base64
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
-import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
+import com.example.safenotepad.cryptography.CryptographyUtil
+import com.example.safenotepad.data.EncryptedSharedPreferencesDataStorage
+import com.example.safenotepad.SharedViewModel
 import javax.crypto.Cipher
-import javax.crypto.SecretKey
 
 
 class EditNoteFragment : Fragment() {
