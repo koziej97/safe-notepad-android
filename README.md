@@ -11,7 +11,7 @@ Basic application that allows you to save a note securely. You can access the ap
 - JavaX Crypto
 
 ### Demo:
-
+![](demo.gif)
 
 ### Cryptography:
 Password is hashed twice using PBKDF2 with HMAC-SHA1 algorithm; the first hash (not stored anywhere) is then used as a key for cipher to encrypting/decrypting the note; the second hash is stored and used to check if typed password is correct.
