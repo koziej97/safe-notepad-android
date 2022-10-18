@@ -1,18 +1,21 @@
 # Safe Notepad Android App
 
-Notepad Android App secured by several cryptographic techniques - still in progress.
+Notepad Android App secured by several cryptographic techniques.
 
-### Done ✓
+Basic application that allows you to save a note securely. You can access the app only by using the password or biometric authentication. The note is saved using several cryptographic techniques, so it's also protected from reading the note directly from app files. If the app is onPause state, the user will be automatically taken to the password screen - to save the note from leaving the application minimized.
 
-- [x] Working basic App  
-- [x] correct navigation beetwen Fragments
-  - [x] close App by back button from NotesFragment
-  - [x] don't go back to PasswordFragment
-  - [x] close app for restart after changing password
-- [x] make a separate class to handle Encrypted Shared Preferences (Shared Preferences also done, but finaly not in use)
-- [x] secure: password is hashed twice; the first hash (not store in Encrypted Shared Preferences) is then used as a key for cipher used for Note; the second hash is stored and used to check if typed password is correct
+### What I use in this app:
+- AndroidKeystore
+- Encrypted Shared Preferences
+- Biometric authentication
+- JavaX Crypto
 
-### TODO
-- [ ] clean up the mess (the code is disaster, make functions, move them to Shared View Model, etc)
-- [x] add biometric log in option
-- [ ] maybe more Notes? (Recycler View, migrate from Shared Preferences to Room Database)
+### Demo:
+
+
+### Cryptography:
+Password is hashed twice using PBKDF2 with HMAC-SHA1 algorithm; the first hash (not stored anywhere) is then used as a key for cipher to encrypting/decrypting the note; the second hash is stored and used to check if typed password is correct.
+
+### Future iterations:
+- [ ] more notes with use of Recycler View, 
+- [ ] migrate from saving notes in Shared Preferences to Room Database
