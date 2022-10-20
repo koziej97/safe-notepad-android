@@ -9,6 +9,7 @@ Basic application that allows you to save a note securely. You can access the ap
 - Encrypted Shared Preferences
 - Biometric authentication
 - JavaX Crypto
+- MVVM Architecture Pattern
 
 ### Demo:
 ![](demo.gif)
@@ -18,4 +19,5 @@ Password is hashed twice using PBKDF2 with HMAC-SHA1 algorithm; the first hash (
 
 ### Future iterations:
 - [ ] more notes with use of Recycler View, 
-- [ ] migrate from saving notes in Shared Preferences to Room Database
+- [ ] migrate from saving notes in Shared Preferences to Room Database,
+- [ ] write some tests with jUnit5
