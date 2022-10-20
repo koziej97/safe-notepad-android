@@ -10,7 +10,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.data.EncryptedSharedPreferencesDataStorage
 import com.example.safenotepad.cryptography.SecurityData
-import com.example.safenotepad.data.SharedPreferencesDataStorage
 import com.example.safenotepad.SharedViewModel
 import com.example.safenotepad.databinding.FragmentChangePasswordBinding
 
@@ -42,7 +41,6 @@ class ChangePasswordFragment : Fragment() {
             changePasswordFragment = this@ChangePasswordFragment
         }
 
-        val sharedPreferencesDataStorage = context?.let { SharedPreferencesDataStorage(it) }
         val encryptedSharedPreferences = context?.let { EncryptedSharedPreferencesDataStorage(it) }
         val SecurityData = SecurityData()
 

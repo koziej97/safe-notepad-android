@@ -1,6 +1,7 @@
 package com.example.safenotepad.fragments
 
 import android.os.Bundle
+import android.text.method.PasswordTransformationMethod
 import android.util.Base64
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -20,7 +21,6 @@ import com.example.safenotepad.*
 import com.example.safenotepad.cryptography.CryptographyUtil
 import com.example.safenotepad.cryptography.SecurityData
 import com.example.safenotepad.data.EncryptedSharedPreferencesDataStorage
-import com.example.safenotepad.data.SharedPreferencesDataStorage
 import com.example.safenotepad.databinding.FragmentPasswordBinding
 
 class PasswordFragment : Fragment() {
@@ -50,7 +50,6 @@ class PasswordFragment : Fragment() {
             sharedViewModel = mSharedViewModel
         }
 
-        val sharedPreferencesDataStorage = context?.let { SharedPreferencesDataStorage(it) }
         val encryptedSharedPreferences = context?.let { EncryptedSharedPreferencesDataStorage(it) }
         val SecurityData = SecurityData()
 
@@ -138,6 +137,7 @@ class PasswordFragment : Fragment() {
 
         val firstPasswordEditText = EditText(activity)
         firstPasswordEditText.hint = "Type your password"
+        firstPasswordEditText.transformationMethod = PasswordTransformationMethod.getInstance();
 
         AlertDialog.Builder(requireActivity())
             .setTitle("Set up your password")

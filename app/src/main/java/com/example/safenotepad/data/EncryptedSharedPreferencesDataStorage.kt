@@ -1,14 +1,15 @@
 package com.example.safenotepad.data
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Base64
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 
-
-class EncryptedSharedPreferencesDataStorage(val context: Context)  {
+class EncryptedSharedPreferencesDataStorage(val context: Context) :
+    EncryptedSharedPreferencesAbstract() {
     private val masterKey = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-    private val sharedPreferencesEncrypted = context.let {
+    override val sharedPreferencesEncrypted = context.let {
         EncryptedSharedPreferences.create(
             "Data",
             masterKey,
@@ -17,56 +18,47 @@ class EncryptedSharedPreferencesDataStorage(val context: Context)  {
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
     }
+    override val editor: SharedPreferences.Editor = sharedPreferencesEncrypted.edit()
 
-    fun savePassword(TEXT: String) {
-        val editor = sharedPreferencesEncrypted.edit()
-        editor?.putString("Password", TEXT)
-        editor?.apply()
+    fun savePassword(text: String){
+        val key = "Password"
+        super.saveString(key ,text)
     }
 
     fun loadPassword(): String? {
         if (!sharedPreferencesEncrypted.contains("Password")){
             return null
         }
-        return sharedPreferencesEncrypted.getString("Password", "")
+        return super.loadString("Password")
     }
 
-    fun saveNote(TEXT: String) {
-        val editor = sharedPreferencesEncrypted.edit()
-        editor?.putString("Note", TEXT)
-        editor?.apply()
+    fun saveNote(text: String) {
+        val key = "Note"
+        super.saveString(key ,text)
     }
 
     fun loadNote(): String? {
         if (!sharedPreferencesEncrypted.contains("Note")){
             return "Empty note"
         }
-        return sharedPreferencesEncrypted.getString("Note", "")
+        return super.loadString("Note")
     }
 
     fun saveSalt(salt: ByteArray) {
-        val text = Base64.encodeToString(salt, Base64.DEFAULT).trim()
-        val editor = sharedPreferencesEncrypted.edit()
-        editor?.putString("Salt", text)
-        editor?.apply()
+        val key = "Salt"
+        super.saveByteArray(key, salt)
     }
 
-    fun loadSalt(): ByteArray {
-        val text = sharedPreferencesEncrypted.getString("Salt", "")?.trim()
-        val salt: ByteArray = Base64.decode(text, Base64.DEFAULT)
-        return salt
+    fun loadSalt() : ByteArray? {
+        return super.loadByteArray("Salt")
     }
 
     fun saveIv(iv: ByteArray) {
-        val text = Base64.encodeToString(iv, Base64.DEFAULT).trim()
-        val editor = sharedPreferencesEncrypted.edit()
-        editor?.putString("IV", text)
-        editor?.apply()
+        val key = "IV"
+        super.saveByteArray(key, iv)
     }
 
-    fun loadIv(): ByteArray {
-        val text = sharedPreferencesEncrypted.getString("IV", "")
-        val iv: ByteArray = Base64.decode(text, Base64.DEFAULT)
-        return iv
+    fun loadIv(): ByteArray? {
+        return super.loadByteArray("IV")
     }
 }
