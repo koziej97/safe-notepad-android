@@ -19,7 +19,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.*
 import com.example.safenotepad.cryptography.CryptographyUtil
-import com.example.safenotepad.cryptography.SecurityData
 import com.example.safenotepad.data.EncryptedSharedPreferencesDataStorage
 import com.example.safenotepad.databinding.FragmentPasswordBinding
 
@@ -51,7 +50,6 @@ class PasswordFragment : Fragment() {
         }
 
         val encryptedSharedPreferences = context?.let { EncryptedSharedPreferencesDataStorage(it) }
-        val SecurityData = SecurityData()
 
         val correctPassword = encryptedSharedPreferences?.loadPassword()
         if (correctPassword != null) {
@@ -70,12 +68,12 @@ class PasswordFragment : Fragment() {
                 // Doing first hash
                 val salt = encryptedSharedPreferences?.loadSalt()
                 mSharedViewModel.salt = salt!!
-                val key = salt.let { it1 -> SecurityData.calculateKey(typedPasswordString, it1) }
-                val hashedPassword = key.let { it1 -> SecurityData.hashFromKey(it1) }.trim()
+                val key = salt.let { it1 -> CryptographyUtil.calculateKey(typedPasswordString, it1) }
+                val hashedPassword = key.let { it1 -> CryptographyUtil.hashFromKey(it1) }.trim()
 
                 // Doing second hash
-                val key2 = salt.let { it1 -> SecurityData.calculateKey(hashedPassword, it1) }
-                val hashedPassword2 = key2.let { it1 -> SecurityData.hashFromKey(it1) }.trim()
+                val key2 = salt.let { it1 -> CryptographyUtil.calculateKey(hashedPassword, it1) }
+                val hashedPassword2 = key2.let { it1 -> CryptographyUtil.hashFromKey(it1) }.trim()
 
                 if (hashedPassword2 == mSharedViewModel.correctPassword){
                     //mSharedViewModel.hashedPasswordForKey = hashedPassword
@@ -133,7 +131,6 @@ class PasswordFragment : Fragment() {
 
     fun createAlertForFirstPassword(){
         val encryptedSharedPreferences = context?.let { EncryptedSharedPreferencesDataStorage(it) }
-        val SecurityData = SecurityData()
 
         val firstPasswordEditText = EditText(activity)
         firstPasswordEditText.hint = "Type your password"
@@ -146,15 +143,15 @@ class PasswordFragment : Fragment() {
                 var correctPassword = firstPasswordEditText.text.toString()
 
                 if (correctPassword != ""){
-                    val salt = SecurityData.generateSalt()
+                    val salt = CryptographyUtil.generateSalt()
                     encryptedSharedPreferences?.saveSalt(salt)
                     mSharedViewModel.salt = salt
                     // Doing first hash
-                    val key = salt.let { it1 -> SecurityData.calculateKey(correctPassword, it1) }
-                    val hashedPassword = key.let { it1 -> SecurityData.hashFromKey(it1) }.trim()
+                    val key = salt.let { it1 -> CryptographyUtil.calculateKey(correctPassword, it1) }
+                    val hashedPassword = key.let { it1 -> CryptographyUtil.hashFromKey(it1) }.trim()
                     // Doing second hash
-                    val key2 = salt.let { it1 -> SecurityData.calculateKey(hashedPassword, it1) }
-                    val hashedPassword2 = key2.let { it1 -> SecurityData.hashFromKey(it1) }.trim()
+                    val key2 = salt.let { it1 -> CryptographyUtil.calculateKey(hashedPassword, it1) }
+                    val hashedPassword2 = key2.let { it1 -> CryptographyUtil.hashFromKey(it1) }.trim()
                     mSharedViewModel.correctPassword = hashedPassword2
                     correctPassword = hashedPassword2
                     encryptedSharedPreferences?.savePassword(hashedPassword2)

@@ -9,8 +9,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.data.EncryptedSharedPreferencesDataStorage
-import com.example.safenotepad.cryptography.SecurityData
 import com.example.safenotepad.SharedViewModel
+import com.example.safenotepad.cryptography.CryptographyUtil
 import com.example.safenotepad.databinding.FragmentChangePasswordBinding
 
 class ChangePasswordFragment : Fragment() {
@@ -42,25 +42,24 @@ class ChangePasswordFragment : Fragment() {
         }
 
         val encryptedSharedPreferences = context?.let { EncryptedSharedPreferencesDataStorage(it) }
-        val SecurityData = SecurityData()
 
         binding.saveChangeButton.setOnClickListener {
             val newPasswordString = newPassword.value
 
             if (newPasswordString != null) {
                 // generate salt
-                val salt = SecurityData.generateSalt()
+                val salt = CryptographyUtil.generateSalt()
                 encryptedSharedPreferences?.saveSalt(salt)
                 mSharedViewModel.newSalt = salt
 
                 // Doing first hash
-                val key = SecurityData.calculateKey(newPasswordString, salt)
-                val hashedPassword = SecurityData.hashFromKey(key).trim()
+                val key = CryptographyUtil.calculateKey(newPasswordString, salt)
+                val hashedPassword = CryptographyUtil.hashFromKey(key).trim()
                 mSharedViewModel.newHashedPasswordForKey = hashedPassword
 
                 // Doing second hash
-                val key2 = salt.let { it1 -> SecurityData.calculateKey(hashedPassword, it1) }
-                val hashedPassword2 = key2.let { it1 -> SecurityData.hashFromKey(it1) }.trim()
+                val key2 = salt.let { it1 -> CryptographyUtil.calculateKey(hashedPassword, it1) }
+                val hashedPassword2 = key2.let { it1 -> CryptographyUtil.hashFromKey(it1) }.trim()
 
                 //sharedPreferencesDataStorage?.savePassword(hashedPassword)
                 encryptedSharedPreferences?.savePassword(hashedPassword2)
