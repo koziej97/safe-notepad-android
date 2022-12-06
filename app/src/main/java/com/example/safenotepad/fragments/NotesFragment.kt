@@ -44,6 +44,10 @@ class NotesFragment : Fragment() {
 
         _binding?.note?.movementMethod = ScrollingMovementMethod()
 
+        binding.noteCard.setOnClickListener {
+            findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToEditNoteFragment())
+        }
+
         binding.buttonEditNote.setOnClickListener {
             findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToEditNoteFragment())
         }
