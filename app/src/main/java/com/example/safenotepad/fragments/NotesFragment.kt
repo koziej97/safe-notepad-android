@@ -5,6 +5,7 @@ import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -53,6 +54,11 @@ class NotesFragment : Fragment(), NotesItemClickListener {
 
         //Hide back arrow from ActionBar
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
+        binding.floatingButton.setOnClickListener {
+            Toast.makeText(context, "Clicked floating button", Toast.LENGTH_LONG).show()
+            findNavController().navigate(R.id.action_NotesFragment_to_editNoteFragment)
+        }
 
         //close App when press Back Button (clear from Recent Tasks)
         requireActivity().onBackPressedDispatcher.addCallback(this) {
