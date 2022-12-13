@@ -25,9 +25,6 @@
         <action
             android:id="@+id/action_NotesFragment_to_editNoteFragment"
             app:destination="@id/editNoteFragment" />
-        <action
-            android:id="@+id/action_NotesFragment_to_changePasswordFragment"
-            app:destination="@id/changePasswordFragment" />
     </fragment>
     <fragment
         android:id="@+id/editNoteFragment"

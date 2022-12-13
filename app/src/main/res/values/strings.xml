@@ -15,4 +15,5 @@
     <string name="new_password">New password</string>
     <string name="info_about_biometric">You MUST use biometric authentication to use this app. If you don\'t have saved fingerprint, please go to settings and set one.</string>
     <string name="use_biometric">Use biometric authentication</string>
+    <string name="about_app">About app</string>
 </resources>

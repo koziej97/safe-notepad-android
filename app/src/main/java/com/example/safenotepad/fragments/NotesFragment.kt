@@ -11,11 +11,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
+import com.example.safenotepad.R
 import com.example.safenotepad.SharedViewModel
+import com.example.safenotepad.dao.Note
 import com.example.safenotepad.databinding.FragmentNotesBinding
+import com.example.safenotepad.recyclerView.NotesItemClickListener
+import com.example.safenotepad.recyclerView.NotesListAdapter
 
-class NotesFragment : Fragment() {
+class NotesFragment : Fragment(), NotesItemClickListener {
 
+    lateinit var mAdapter: NotesListAdapter
     private var _binding: FragmentNotesBinding? = null
     private val binding get() = _binding!!
 
@@ -29,7 +34,14 @@ class NotesFragment : Fragment() {
         val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
         actionBar?.show()
         _binding = FragmentNotesBinding.inflate(inflater, container, false)
-        noteText.value = mSharedViewModel.noteTextShared
+//        noteText.value = mSharedViewModel.noteTextShared
+
+        mAdapter = NotesListAdapter(this)
+
+        binding.lifecycleOwner = this
+        binding.sharedViewModel = mSharedViewModel
+        binding.notesRecyclerview.adapter = mAdapter
+
         return binding.root
     }
 
@@ -42,24 +54,17 @@ class NotesFragment : Fragment() {
         //Hide back arrow from ActionBar
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
-        _binding?.note?.movementMethod = ScrollingMovementMethod()
-
-        binding.noteCard.setOnClickListener {
-            findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToEditNoteFragment())
-        }
-
-        binding.buttonEditNote.setOnClickListener {
-            findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToEditNoteFragment())
-        }
-
-        binding.buttonChangePassword.setOnClickListener {
-            findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToChangePasswordFragment())
-        }
-
         //close App when press Back Button (clear from Recent Tasks)
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             activity?.finishAndRemoveTask()
         }
+    }
+
+    override fun chosenNote(note: Note) {
+        super.chosenNote(note)
+        val bundle = Bundle()
+        bundle.putInt("noteId", note.id)
+        findNavController().navigate(R.id.action_NotesFragment_to_editNoteFragment, bundle)
     }
 
     override fun onDestroyView() {
