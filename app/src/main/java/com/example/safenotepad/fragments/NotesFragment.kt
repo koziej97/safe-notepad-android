@@ -17,10 +17,9 @@ import com.example.safenotepad.SharedViewModel
 import com.example.safenotepad.SharedViewModelFactory
 import com.example.safenotepad.data.database.Note
 import com.example.safenotepad.databinding.FragmentNotesBinding
-import com.example.safenotepad.recyclerView.NotesItemClickListener
 import com.example.safenotepad.recyclerView.NotesListAdapter
 
-class NotesFragment : Fragment(), NotesItemClickListener {
+class NotesFragment : Fragment() {
 
     lateinit var mAdapter: NotesListAdapter
     private var _binding: FragmentNotesBinding? = null
@@ -42,11 +41,21 @@ class NotesFragment : Fragment(), NotesItemClickListener {
         _binding = FragmentNotesBinding.inflate(inflater, container, false)
 //        noteText.value = mSharedViewModel.noteTextShared
 
-        mAdapter = NotesListAdapter(this)
+        mAdapter = NotesListAdapter { note ->
+            val bundle = Bundle()
+            bundle.putInt("noteId", note.id)
+            findNavController().navigate(R.id.action_NotesFragment_to_editNoteFragment, bundle)
+        }
 
         binding.lifecycleOwner = this
         binding.sharedViewModel = mSharedViewModel
         binding.notesRecyclerview.adapter = mAdapter
+
+        mSharedViewModel.allNotes.observe(this.viewLifecycleOwner) { notes ->
+            notes.let {
+                mAdapter.submitList(it)
+            }
+        }
 
         return binding.root
     }
@@ -70,13 +79,6 @@ class NotesFragment : Fragment(), NotesItemClickListener {
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             activity?.finishAndRemoveTask()
         }
-    }
-
-    override fun chosenNote(note: Note) {
-        super.chosenNote(note)
-        val bundle = Bundle()
-        bundle.putInt("noteId", note.id)
-        findNavController().navigate(R.id.action_NotesFragment_to_editNoteFragment, bundle)
     }
 
     override fun onDestroyView() {

@@ -1,10 +1,7 @@
 package com.example.safenotepad
 
 import android.util.Base64
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.safenotepad.cryptography.CryptographyUtil
 import com.example.safenotepad.data.database.Note
 import com.example.safenotepad.data.database.NoteDao
@@ -13,21 +10,7 @@ import javax.crypto.Cipher
 
 class SharedViewModel(private val noteDao: NoteDao): ViewModel() {
 
-    val listOfNotes = listOf<Note>(
-        Note(id=0, text="Testowa notatka"),
-        Note(id=1, text="Test"),
-        Note(id=2, text="Test"),
-        Note(id=3, text="Test"),
-        Note(id=4, text="Test"),
-        Note(id=5, text="Test"),
-        Note(id=6, text="Test"),
-        Note(id=7, text="Test"),
-        Note(id=8, text="Test"),
-        Note(id=9, text="Test"),
-        Note(id=10, text="Test"),
-        Note(id=11, text="Test"),
-        Note(id=12, text="Test"),
-    )
+    val allNotes: LiveData<List<Note>> = noteDao.getAllNotes().asLiveData()
 
     var correctPassword = String()
     var noteTextShared = String()
