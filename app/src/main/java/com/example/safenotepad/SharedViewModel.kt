@@ -3,11 +3,15 @@ package com.example.safenotepad
 import android.util.Base64
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.safenotepad.cryptography.CryptographyUtil
 import com.example.safenotepad.data.database.Note
+import com.example.safenotepad.data.database.NoteDao
+import kotlinx.coroutines.launch
 import javax.crypto.Cipher
 
-class SharedViewModel: ViewModel() {
+class SharedViewModel(private val noteDao: NoteDao): ViewModel() {
 
     val listOfNotes = listOf<Note>(
         Note(id=0, text="Testowa notatka"),
@@ -29,6 +33,17 @@ class SharedViewModel: ViewModel() {
     var noteTextShared = String()
     var isTypedPasswordCorrect = false
     val isBiometricAuthSucceeded: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    fun addNewNote(noteText: String){
+        val newNote = Note(text = noteText)
+        insertNote(newNote)
+    }
+
+    private fun insertNote(note: Note) {
+        viewModelScope.launch {
+            noteDao.insert(note)
+        }
+    }
 
     fun generateSalt(): ByteArray {
         return CryptographyUtil.generateSalt()
@@ -74,5 +89,15 @@ class SharedViewModel: ViewModel() {
         else {
             noteTextShared = noteTextEncrypted
         }
+    }
+}
+
+class SharedViewModelFactory(private val noteDao: NoteDao): ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(SharedViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return SharedViewModel(noteDao) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

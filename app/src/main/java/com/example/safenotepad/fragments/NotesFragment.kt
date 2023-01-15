@@ -12,7 +12,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.R
+import com.example.safenotepad.SafeNotepadApplication
 import com.example.safenotepad.SharedViewModel
+import com.example.safenotepad.SharedViewModelFactory
 import com.example.safenotepad.data.database.Note
 import com.example.safenotepad.databinding.FragmentNotesBinding
 import com.example.safenotepad.recyclerView.NotesItemClickListener
@@ -24,7 +26,11 @@ class NotesFragment : Fragment(), NotesItemClickListener {
     private var _binding: FragmentNotesBinding? = null
     private val binding get() = _binding!!
 
-    private val mSharedViewModel: SharedViewModel by activityViewModels()
+    private val mSharedViewModel: SharedViewModel by activityViewModels {
+        SharedViewModelFactory(
+            (activity?.application as SafeNotepadApplication).database.noteDao()
+        )
+    }
     var noteText = MutableLiveData<String>()
 
     override fun onCreateView(
@@ -55,8 +61,9 @@ class NotesFragment : Fragment(), NotesItemClickListener {
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
         binding.floatingButton.setOnClickListener {
-            Toast.makeText(context, "Clicked floating button", Toast.LENGTH_LONG).show()
-            findNavController().navigate(R.id.action_NotesFragment_to_editNoteFragment)
+            Toast.makeText(context, "Adding new note...", Toast.LENGTH_LONG).show()
+            mSharedViewModel.addNewNote("nowa notatka")
+            //findNavController().navigate(R.id.action_NotesFragment_to_editNoteFragment)
         }
 
         //close App when press Back Button (clear from Recent Tasks)

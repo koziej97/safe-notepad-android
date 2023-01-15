@@ -13,15 +13,21 @@ import com.example.safenotepad.databinding.FragmentEditNoteBinding
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import com.example.safenotepad.R
+import com.example.safenotepad.SafeNotepadApplication
 import com.example.safenotepad.data.sharedPreferences.EncryptedSharedPreferencesDataStorage
 import com.example.safenotepad.SharedViewModel
+import com.example.safenotepad.SharedViewModelFactory
 import javax.crypto.Cipher
 
 class EditNoteFragment : Fragment() {
     private var _binding: FragmentEditNoteBinding? = null
     private val binding get() = _binding!!
 
-    private val mSharedViewModel: SharedViewModel by activityViewModels()
+    private val mSharedViewModel: SharedViewModel by activityViewModels {
+        SharedViewModelFactory(
+            (activity?.application as SafeNotepadApplication).database.noteDao()
+        )
+    }
     var newNote = MutableLiveData<String>()
 
     override fun onCreateView(

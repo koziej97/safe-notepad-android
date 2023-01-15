@@ -22,7 +22,11 @@ import com.example.safenotepad.databinding.FragmentPasswordBinding
 class PasswordFragment : Fragment() {
     private var _binding: FragmentPasswordBinding? = null
     private val binding get() = _binding!!
-    private val mSharedViewModel: SharedViewModel by activityViewModels()
+    private val mSharedViewModel: SharedViewModel by activityViewModels {
+        SharedViewModelFactory(
+            (activity?.application as SafeNotepadApplication).database.noteDao()
+        )
+    }
     val typedPassword =  MutableLiveData<String>()
 
     override fun onCreateView(
@@ -78,7 +82,7 @@ class PasswordFragment : Fragment() {
     private fun createAlertForFirstPassword(encryptedSharedPreferences: EncryptedSharedPreferencesDataStorage){
         val firstPasswordEditText = EditText(activity)
         firstPasswordEditText.hint = "Type your password"
-        firstPasswordEditText.transformationMethod = PasswordTransformationMethod.getInstance();
+        firstPasswordEditText.transformationMethod = PasswordTransformationMethod.getInstance()
         AlertDialog.Builder(requireActivity())
             .setTitle("Set up your password")
             .setView(firstPasswordEditText)
