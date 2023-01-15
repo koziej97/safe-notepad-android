@@ -27,6 +27,7 @@ class EditNoteFragment : Fragment() {
     private val binding get() = _binding!!
 
     lateinit var note: Note
+    private val navigationArgs: EditNoteFragmentArgs by navArgs()
 
     private val mSharedViewModel: SharedViewModel by activityViewModels {
         SharedViewModelFactory(
@@ -34,16 +35,11 @@ class EditNoteFragment : Fragment() {
         )
     }
 
-    private val navigationArgs: EditNoteFragmentArgs by navArgs()
-
-    var newNote = MutableLiveData<String>()
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentEditNoteBinding.inflate(inflater, container, false)
-        newNote.value = mSharedViewModel.noteTextShared
         return binding.root
     }
 
@@ -121,7 +117,7 @@ class EditNoteFragment : Fragment() {
     }
 
     private fun saveNote(){
-        val newNoteString = newNote.value
+        val newNoteString = binding.noteEditText.text.toString() //newNote.value
         if (newNoteString != null) {
             val cipher = mSharedViewModel.getCipherForEncryption()
             encryptAndSave(newNoteString, cipher)

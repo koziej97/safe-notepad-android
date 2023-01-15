@@ -29,7 +29,6 @@ class NotesFragment : Fragment() {
             (activity?.application as SafeNotepadApplication).database.noteDao()
         )
     }
-    var noteText = MutableLiveData<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,7 +37,6 @@ class NotesFragment : Fragment() {
         val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
         actionBar?.show()
         _binding = FragmentNotesBinding.inflate(inflater, container, false)
-//        noteText.value = mSharedViewModel.noteTextShared
 
         mAdapter = NotesListAdapter { note ->
             val action = NotesFragmentDirections.actionNotesFragmentToEditNoteFragment(
