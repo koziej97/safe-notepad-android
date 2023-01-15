@@ -5,7 +5,7 @@
     <data>
         <variable
             name="note"
-            type="com.example.safenotepad.dao.Note" />
+            type="com.example.safenotepad.data.database.Note" />
         <variable
             name="clickListener"
             type="com.example.safenotepad.recyclerView.NotesItemClickListener" />

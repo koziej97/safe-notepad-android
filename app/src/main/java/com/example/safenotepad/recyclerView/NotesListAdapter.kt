@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.safenotepad.R
-import com.example.safenotepad.dao.Note
+import com.example.safenotepad.data.database.Note
 import com.example.safenotepad.databinding.ItemNoteBinding
 
 class NotesListAdapter internal constructor(private val mListener: NotesItemClickListener):

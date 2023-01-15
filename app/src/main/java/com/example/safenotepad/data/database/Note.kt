@@ -1,4 +1,4 @@
-package com.example.safenotepad.dao
+package com.example.safenotepad.data.database
 
 data class Note(
     val id: Int,

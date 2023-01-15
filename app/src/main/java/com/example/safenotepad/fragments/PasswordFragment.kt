@@ -16,7 +16,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.*
 import com.example.safenotepad.biometricAuthentication.BiometricAuthUtil
-import com.example.safenotepad.data.EncryptedSharedPreferencesDataStorage
+import com.example.safenotepad.data.sharedPreferences.EncryptedSharedPreferencesDataStorage
 import com.example.safenotepad.databinding.FragmentPasswordBinding
 
 class PasswordFragment : Fragment() {
@@ -99,7 +99,8 @@ class PasswordFragment : Fragment() {
     }
 
     private fun saveNewPassword(correctPassword: String,
-                                encryptedSharedPreferences: EncryptedSharedPreferencesDataStorage){
+                                encryptedSharedPreferences: EncryptedSharedPreferencesDataStorage
+    ){
         val salt = mSharedViewModel.generateSalt()
         encryptedSharedPreferences.saveSalt(salt)
         val hashedPassword = mSharedViewModel.hashPassword(correctPassword, salt)

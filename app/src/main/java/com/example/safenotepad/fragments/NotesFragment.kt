@@ -1,7 +1,6 @@
 package com.example.safenotepad.fragments
 
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.R
 import com.example.safenotepad.SharedViewModel
-import com.example.safenotepad.dao.Note
+import com.example.safenotepad.data.database.Note
 import com.example.safenotepad.databinding.FragmentNotesBinding
 import com.example.safenotepad.recyclerView.NotesItemClickListener
 import com.example.safenotepad.recyclerView.NotesListAdapter

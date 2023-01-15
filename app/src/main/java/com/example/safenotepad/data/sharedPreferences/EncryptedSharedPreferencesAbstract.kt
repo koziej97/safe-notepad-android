@@ -1,4 +1,4 @@
-package com.example.safenotepad.data
+package com.example.safenotepad.data.sharedPreferences
 
 import android.content.SharedPreferences
 import android.util.Base64

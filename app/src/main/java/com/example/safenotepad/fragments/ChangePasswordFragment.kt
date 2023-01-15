@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
-import com.example.safenotepad.data.EncryptedSharedPreferencesDataStorage
+import com.example.safenotepad.data.sharedPreferences.EncryptedSharedPreferencesDataStorage
 import com.example.safenotepad.SharedViewModel
 import com.example.safenotepad.databinding.FragmentChangePasswordBinding
 

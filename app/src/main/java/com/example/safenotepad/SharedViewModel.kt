@@ -4,7 +4,7 @@ import android.util.Base64
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.safenotepad.cryptography.CryptographyUtil
-import com.example.safenotepad.dao.Note
+import com.example.safenotepad.data.database.Note
 import javax.crypto.Cipher
 
 class SharedViewModel: ViewModel() {
