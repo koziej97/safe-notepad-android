@@ -27,6 +27,12 @@ class SharedViewModel(private val noteDao: NoteDao): ViewModel() {
         }
     }
 
+    fun deleteNote(note: Note) {
+        viewModelScope.launch {
+            noteDao.delete(note)
+        }
+    }
+
     var correctPassword = String()
     var noteTextShared = String()
     var isTypedPasswordCorrect = false

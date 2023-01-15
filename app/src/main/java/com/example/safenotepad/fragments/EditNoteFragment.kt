@@ -84,6 +84,7 @@ class EditNoteFragment : Fragment() {
     private fun bindAddNote() {
         _binding?.apply {
             editNoteFragment = this@EditNoteFragment
+            deleteButton.isEnabled = false
         }
 
         binding.saveEditButton.setOnClickListener {
@@ -105,6 +106,11 @@ class EditNoteFragment : Fragment() {
 
     private fun isEntryValid(): Boolean {
         return mSharedViewModel.isEntryValid(binding.noteEditText.text.toString())
+    }
+
+    private fun deleteNote() {
+        mSharedViewModel.deleteNote(note)
+        findNavController().navigateUp()
     }
 
     private fun saveNote(){
@@ -130,8 +136,7 @@ class EditNoteFragment : Fragment() {
             .setTitle(context.resources.getString(R.string.confirm_delete_button))
             .setPositiveButton("Yes") { _, _ ->
                 Toast.makeText(context, "Deleting note...", Toast.LENGTH_LONG).show()
-                findNavController().navigate(
-                    EditNoteFragmentDirections.actionEditNoteFragmentToNotesFragment())
+                deleteNote()
             }
             .setNegativeButton("No", null)
             .setCancelable(false)
