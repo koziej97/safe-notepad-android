@@ -72,12 +72,19 @@ class EditNoteFragment : Fragment() {
         }
 
         binding.saveEditButton.setOnClickListener {
-            // updateNote()
-            saveNote()
+            updateNote()
         }
 
         binding.deleteButton.setOnClickListener {
             createConfirmAlertForDeleteButton(requireContext())
+        }
+    }
+
+    private fun updateNote() {
+        if (isEntryValid()) {
+            mSharedViewModel.updateNote(note.id, binding.noteEditText.text.toString())
+            val action = EditNoteFragmentDirections.actionEditNoteFragmentToNotesFragment()
+            findNavController().navigate(action)
         }
     }
 

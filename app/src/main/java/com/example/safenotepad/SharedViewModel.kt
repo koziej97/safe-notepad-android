@@ -33,6 +33,17 @@ class SharedViewModel(private val noteDao: NoteDao): ViewModel() {
         }
     }
 
+    fun updateNote(id: Int, noteText: String) {
+        val note = Note(id = id, text = noteText)
+        updateNote(note)
+    }
+
+    private fun updateNote(note: Note) {
+        viewModelScope.launch {
+            noteDao.update(note)
+        }
+    }
+
     var correctPassword = String()
     var noteTextShared = String()
     var isTypedPasswordCorrect = false
