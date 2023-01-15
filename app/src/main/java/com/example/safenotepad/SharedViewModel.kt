@@ -12,10 +12,9 @@ class SharedViewModel(private val noteDao: NoteDao): ViewModel() {
 
     val allNotes: LiveData<List<Note>> = noteDao.getAllNotes().asLiveData()
 
-    var correctPassword = String()
-    var noteTextShared = String()
-    var isTypedPasswordCorrect = false
-    val isBiometricAuthSucceeded: MutableLiveData<Boolean> = MutableLiveData(false)
+    fun getNoteById(id: Int): LiveData<Note> {
+        return noteDao.getNote(id).asLiveData()
+    }
 
     fun addNewNote(noteText: String){
         val newNote = Note(text = noteText)
@@ -27,6 +26,11 @@ class SharedViewModel(private val noteDao: NoteDao): ViewModel() {
             noteDao.insert(note)
         }
     }
+
+    var correctPassword = String()
+    var noteTextShared = String()
+    var isTypedPasswordCorrect = false
+    val isBiometricAuthSucceeded: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun generateSalt(): ByteArray {
         return CryptographyUtil.generateSalt()

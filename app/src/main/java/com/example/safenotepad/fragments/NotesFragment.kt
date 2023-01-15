@@ -15,7 +15,6 @@ import com.example.safenotepad.R
 import com.example.safenotepad.SafeNotepadApplication
 import com.example.safenotepad.SharedViewModel
 import com.example.safenotepad.SharedViewModelFactory
-import com.example.safenotepad.data.database.Note
 import com.example.safenotepad.databinding.FragmentNotesBinding
 import com.example.safenotepad.recyclerView.NotesListAdapter
 
@@ -42,9 +41,11 @@ class NotesFragment : Fragment() {
 //        noteText.value = mSharedViewModel.noteTextShared
 
         mAdapter = NotesListAdapter { note ->
-            val bundle = Bundle()
-            bundle.putInt("noteId", note.id)
-            findNavController().navigate(R.id.action_NotesFragment_to_editNoteFragment, bundle)
+            val action = NotesFragmentDirections.actionNotesFragmentToEditNoteFragment(
+                getString(R.string.edit_note),
+                note.id
+            )
+            findNavController().navigate(action)
         }
 
         binding.lifecycleOwner = this
@@ -70,9 +71,11 @@ class NotesFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
         binding.floatingButton.setOnClickListener {
-            Toast.makeText(context, "Adding new note...", Toast.LENGTH_LONG).show()
-            mSharedViewModel.addNewNote("nowa notatka")
-            //findNavController().navigate(R.id.action_NotesFragment_to_editNoteFragment)
+            val action = NotesFragmentDirections.actionNotesFragmentToEditNoteFragment(
+                getString(R.string.add_note),
+                -1
+            )
+            findNavController().navigate(action)
         }
 
         //close App when press Back Button (clear from Recent Tasks)

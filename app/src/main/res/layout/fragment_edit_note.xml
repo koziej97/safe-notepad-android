@@ -25,7 +25,6 @@
             android:gravity="top|start"
             android:hint="@string/edit_note"
             android:padding="10dp"
-            android:text="@={editNoteFragment.newNote}"
             android:textSize="24sp"
             app:layout_constraintBottom_toTopOf="@+id/save_edit_button"
             app:layout_constraintEnd_toEndOf="parent"

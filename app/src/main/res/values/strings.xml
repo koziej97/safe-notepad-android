@@ -7,6 +7,7 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="ok">OK</string>
     <string name="edit_note">Edit Note</string>
+    <string name="add_note">Add Note</string>
     <string name="change_password">Change password</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="save_cahnges">Save changes</string>

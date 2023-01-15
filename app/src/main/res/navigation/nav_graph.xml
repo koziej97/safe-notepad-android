@@ -10,7 +10,6 @@
         android:label="@string/app_name"
         android:name="com.example.safenotepad.fragments.PasswordFragment"
         tools:layout="@layout/fragment_password">
-
         <action
             android:id="@+id/action_PasswordFragment_to_NotesFragment"
             app:destination="@id/NotesFragment"
@@ -24,13 +23,26 @@
         tools:layout="@layout/fragment_notes">
         <action
             android:id="@+id/action_NotesFragment_to_editNoteFragment"
-            app:destination="@id/editNoteFragment" />
+            app:destination="@id/editNoteFragment">
+            <argument
+                android:name="title"
+                app:argType="string"/>
+            <argument
+                android:name="note_id"
+                app:argType="integer" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/editNoteFragment"
-        android:label="@string/edit_note"
+        android:label="{title}"
         android:name="com.example.safenotepad.fragments.EditNoteFragment"
         tools:layout="@layout/fragment_edit_note" >
+        <argument
+            android:name="title"
+            app:argType="string"/>
+        <argument
+            android:name="note_id"
+            app:argType="integer" />
         <action
             android:id="@+id/action_editNoteFragment_to_NotesFragment"
             app:destination="@id/NotesFragment"
