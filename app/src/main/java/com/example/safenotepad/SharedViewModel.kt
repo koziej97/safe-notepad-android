@@ -77,6 +77,13 @@ class SharedViewModel(private val noteDao: NoteDao): ViewModel() {
             noteTextShared = noteTextEncrypted
         }
     }
+
+    fun isEntryValid(text: String): Boolean {
+        if (text.isBlank()){
+            return false
+        }
+        return true
+    }
 }
 
 class SharedViewModelFactory(private val noteDao: NoteDao): ViewModelProvider.Factory {

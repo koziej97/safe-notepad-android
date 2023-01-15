@@ -53,8 +53,10 @@ class EditNoteFragment : Fragment() {
         if (noteId > 0) {
             mSharedViewModel.getNoteById(noteId).observe(this.viewLifecycleOwner) { selectedNote ->
                 note = selectedNote
-                bind(note)
+                bindEditNote(note)
             }
+        } else {
+            bindAddNote()
         }
     }
 
@@ -63,19 +65,46 @@ class EditNoteFragment : Fragment() {
         _binding = null
     }
 
-    private fun bind(note: Note) {
+    private fun bindEditNote(note: Note) {
         _binding?.apply {
             editNoteFragment = this@EditNoteFragment
             noteEditText.text = Editable.Factory.getInstance().newEditable(note.text)
         }
 
         binding.saveEditButton.setOnClickListener {
+            // updateNote()
             saveNote()
         }
 
         binding.deleteButton.setOnClickListener {
             createConfirmAlertForDeleteButton(requireContext())
         }
+    }
+
+    private fun bindAddNote() {
+        _binding?.apply {
+            editNoteFragment = this@EditNoteFragment
+        }
+
+        binding.saveEditButton.setOnClickListener {
+            addNewNote()
+        }
+
+        binding.deleteButton.setOnClickListener {
+            createConfirmAlertForDeleteButton(requireContext())
+        }
+    }
+
+    private fun addNewNote() {
+        if (isEntryValid()) {
+            mSharedViewModel.addNewNote(binding.noteEditText.text.toString())
+            val action = EditNoteFragmentDirections.actionEditNoteFragmentToNotesFragment()
+            findNavController().navigate(action)
+        }
+    }
+
+    private fun isEntryValid(): Boolean {
+        return mSharedViewModel.isEntryValid(binding.noteEditText.text.toString())
     }
 
     private fun saveNote(){
