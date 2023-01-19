@@ -11,22 +11,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.*
 import com.example.safenotepad.biometricAuthentication.BiometricAuthUtil
 import com.example.safenotepad.data.sharedPreferences.EncryptedSharedPreferencesDataStorage
 import com.example.safenotepad.databinding.FragmentPasswordBinding
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class PasswordFragment : Fragment() {
     private var _binding: FragmentPasswordBinding? = null
     private val binding get() = _binding!!
-    private val mSharedViewModel: SharedViewModel by activityViewModels {
-        SharedViewModelFactory(
-            (activity?.application as SafeNotepadApplication).database.noteDao()
-        )
-    }
+    private val mSharedViewModel by sharedViewModel<SharedViewModel>()
     val typedPassword =  MutableLiveData<String>()
 
     override fun onCreateView(

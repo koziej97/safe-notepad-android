@@ -5,10 +5,15 @@ import androidx.lifecycle.*
 import com.example.safenotepad.cryptography.CryptographyUtil
 import com.example.safenotepad.data.database.Note
 import com.example.safenotepad.data.database.NoteDao
+import com.example.safenotepad.data.sharedPreferences.EncryptedSharedPreferencesDataStorage
 import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent.inject
 import javax.crypto.Cipher
 
-class SharedViewModel(private val noteDao: NoteDao): ViewModel() {
+class SharedViewModel(
+    private val noteDao: NoteDao,
+    private val sharedPreferences: EncryptedSharedPreferencesDataStorage
+    ): ViewModel() {
 
     val allNotes: LiveData<List<Note>> = noteDao.getAllNotes().asLiveData()
 
@@ -100,15 +105,5 @@ class SharedViewModel(private val noteDao: NoteDao): ViewModel() {
             return false
         }
         return true
-    }
-}
-
-class SharedViewModelFactory(private val noteDao: NoteDao): ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(SharedViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return SharedViewModel(noteDao) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

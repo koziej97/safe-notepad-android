@@ -11,15 +11,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.databinding.FragmentEditNoteBinding
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.navArgs
 import com.example.safenotepad.R
-import com.example.safenotepad.SafeNotepadApplication
 import com.example.safenotepad.data.sharedPreferences.EncryptedSharedPreferencesDataStorage
 import com.example.safenotepad.SharedViewModel
-import com.example.safenotepad.SharedViewModelFactory
 import com.example.safenotepad.data.database.Note
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import javax.crypto.Cipher
 
 class EditNoteFragment : Fragment() {
@@ -29,11 +26,7 @@ class EditNoteFragment : Fragment() {
     lateinit var note: Note
     private val navigationArgs: EditNoteFragmentArgs by navArgs()
 
-    private val mSharedViewModel: SharedViewModel by activityViewModels {
-        SharedViewModelFactory(
-            (activity?.application as SafeNotepadApplication).database.noteDao()
-        )
-    }
+    private val mSharedViewModel by sharedViewModel<SharedViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
