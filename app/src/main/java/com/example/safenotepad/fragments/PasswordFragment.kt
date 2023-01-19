@@ -16,13 +16,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.*
 import com.example.safenotepad.biometricAuthentication.BiometricAuthUtil
-import com.example.safenotepad.data.EncryptedSharedPreferencesDataStorage
+import com.example.safenotepad.data.sharedPreferences.EncryptedSharedPreferencesDataStorage
 import com.example.safenotepad.databinding.FragmentPasswordBinding
 
 class PasswordFragment : Fragment() {
     private var _binding: FragmentPasswordBinding? = null
     private val binding get() = _binding!!
-    private val mSharedViewModel: SharedViewModel by activityViewModels()
+    private val mSharedViewModel: SharedViewModel by activityViewModels {
+        SharedViewModelFactory(
+            (activity?.application as SafeNotepadApplication).database.noteDao()
+        )
+    }
     val typedPassword =  MutableLiveData<String>()
 
     override fun onCreateView(
@@ -78,7 +82,7 @@ class PasswordFragment : Fragment() {
     private fun createAlertForFirstPassword(encryptedSharedPreferences: EncryptedSharedPreferencesDataStorage){
         val firstPasswordEditText = EditText(activity)
         firstPasswordEditText.hint = "Type your password"
-        firstPasswordEditText.transformationMethod = PasswordTransformationMethod.getInstance();
+        firstPasswordEditText.transformationMethod = PasswordTransformationMethod.getInstance()
         AlertDialog.Builder(requireActivity())
             .setTitle("Set up your password")
             .setView(firstPasswordEditText)
@@ -99,7 +103,8 @@ class PasswordFragment : Fragment() {
     }
 
     private fun saveNewPassword(correctPassword: String,
-                                encryptedSharedPreferences: EncryptedSharedPreferencesDataStorage){
+                                encryptedSharedPreferences: EncryptedSharedPreferencesDataStorage
+    ){
         val salt = mSharedViewModel.generateSalt()
         encryptedSharedPreferences.saveSalt(salt)
         val hashedPassword = mSharedViewModel.hashPassword(correctPassword, salt)

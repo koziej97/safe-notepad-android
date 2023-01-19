@@ -6,12 +6,12 @@ plugins {
 }
 
 android {
-    compileSdk 30
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.safenotepad"
         minSdk 23
-        targetSdk 30
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -54,4 +54,10 @@ dependencies {
 
     implementation "androidx.biometric:biometric:1.1.0"
 
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
+
+    // Room
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
 }

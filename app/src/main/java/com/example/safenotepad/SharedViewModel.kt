@@ -1,29 +1,48 @@
 package com.example.safenotepad
 
 import android.util.Base64
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.example.safenotepad.cryptography.CryptographyUtil
-import com.example.safenotepad.dao.Note
+import com.example.safenotepad.data.database.Note
+import com.example.safenotepad.data.database.NoteDao
+import kotlinx.coroutines.launch
 import javax.crypto.Cipher
 
-class SharedViewModel: ViewModel() {
+class SharedViewModel(private val noteDao: NoteDao): ViewModel() {
 
-    val listOfNotes = listOf<Note>(
-        Note(id=0, text="Testowa notatka"),
-        Note(id=1, text="Test"),
-        Note(id=2, text="Test"),
-        Note(id=3, text="Test"),
-        Note(id=4, text="Test"),
-        Note(id=5, text="Test"),
-        Note(id=6, text="Test"),
-        Note(id=7, text="Test"),
-        Note(id=8, text="Test"),
-        Note(id=9, text="Test"),
-        Note(id=10, text="Test"),
-        Note(id=11, text="Test"),
-        Note(id=12, text="Test"),
-    )
+    val allNotes: LiveData<List<Note>> = noteDao.getAllNotes().asLiveData()
+
+    fun getNoteById(id: Int): LiveData<Note> {
+        return noteDao.getNote(id).asLiveData()
+    }
+
+    fun addNewNote(noteText: String){
+        val newNote = Note(text = noteText)
+        insertNote(newNote)
+    }
+
+    private fun insertNote(note: Note) {
+        viewModelScope.launch {
+            noteDao.insert(note)
+        }
+    }
+
+    fun deleteNote(note: Note) {
+        viewModelScope.launch {
+            noteDao.delete(note)
+        }
+    }
+
+    fun updateNote(id: Int, noteText: String) {
+        val note = Note(id = id, text = noteText)
+        updateNote(note)
+    }
+
+    private fun updateNote(note: Note) {
+        viewModelScope.launch {
+            noteDao.update(note)
+        }
+    }
 
     var correctPassword = String()
     var noteTextShared = String()
@@ -74,5 +93,22 @@ class SharedViewModel: ViewModel() {
         else {
             noteTextShared = noteTextEncrypted
         }
+    }
+
+    fun isEntryValid(text: String): Boolean {
+        if (text.isBlank()){
+            return false
+        }
+        return true
+    }
+}
+
+class SharedViewModelFactory(private val noteDao: NoteDao): ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(SharedViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return SharedViewModel(noteDao) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

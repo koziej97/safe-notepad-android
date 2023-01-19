@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.example.safenotepad.SharedViewModel
-import com.example.safenotepad.data.EncryptedSharedPreferencesDataStorage
+import com.example.safenotepad.data.sharedPreferences.EncryptedSharedPreferencesDataStorage
 
 class BiometricAuthUtil (val context: Context, val mSharedViewModel: SharedViewModel) {
 

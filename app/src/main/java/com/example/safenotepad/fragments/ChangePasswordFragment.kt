@@ -8,15 +8,21 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
-import com.example.safenotepad.data.EncryptedSharedPreferencesDataStorage
+import com.example.safenotepad.SafeNotepadApplication
+import com.example.safenotepad.data.sharedPreferences.EncryptedSharedPreferencesDataStorage
 import com.example.safenotepad.SharedViewModel
+import com.example.safenotepad.SharedViewModelFactory
 import com.example.safenotepad.databinding.FragmentChangePasswordBinding
 
 class ChangePasswordFragment : Fragment() {
     private var _binding: FragmentChangePasswordBinding? = null
     private val binding get() = _binding!!
 
-    private val mSharedViewModel: SharedViewModel by activityViewModels()
+    private val mSharedViewModel: SharedViewModel by activityViewModels {
+        SharedViewModelFactory(
+            (activity?.application as SafeNotepadApplication).database.noteDao()
+        )
+    }
     val newPassword = MutableLiveData<String>()
 
     override fun onCreateView(

@@ -1,8 +1,7 @@
-package com.example.safenotepad.data
+package com.example.safenotepad.data.sharedPreferences
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Base64
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 
