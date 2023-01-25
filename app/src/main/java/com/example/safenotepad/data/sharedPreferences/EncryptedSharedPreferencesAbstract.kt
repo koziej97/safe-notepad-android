@@ -1,4 +1,4 @@
-package com.example.safenotepad.data
+package com.example.safenotepad.data.sharedPreferences
 
 import android.content.SharedPreferences
 import android.util.Base64
@@ -25,5 +25,10 @@ abstract class EncryptedSharedPreferencesAbstract {
     fun loadByteArray(key: String): ByteArray? {
         val text = loadString(key)
         return Base64.decode(text, Base64.DEFAULT)
+    }
+
+    fun removeString(key: String) {
+        editor.remove(key)
+        editor.apply()
     }
 }

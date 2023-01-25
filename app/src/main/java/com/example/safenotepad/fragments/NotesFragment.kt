@@ -1,26 +1,26 @@
 package com.example.safenotepad.fragments
 
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
+import com.example.safenotepad.R
 import com.example.safenotepad.SharedViewModel
 import com.example.safenotepad.databinding.FragmentNotesBinding
+import com.example.safenotepad.recyclerView.NotesListAdapter
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class NotesFragment : Fragment() {
 
+    lateinit var mAdapter: NotesListAdapter
     private var _binding: FragmentNotesBinding? = null
     private val binding get() = _binding!!
 
-    private val mSharedViewModel: SharedViewModel by activityViewModels()
-    var noteText = MutableLiveData<String>()
+    private val mSharedViewModel by sharedViewModel<SharedViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,7 +29,26 @@ class NotesFragment : Fragment() {
         val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
         actionBar?.show()
         _binding = FragmentNotesBinding.inflate(inflater, container, false)
-        noteText.value = mSharedViewModel.noteTextShared
+
+        mAdapter = NotesListAdapter { note ->
+            val action = NotesFragmentDirections.actionNotesFragmentToEditNoteFragment(
+                getString(R.string.edit_note),
+                note.id
+            )
+            findNavController().navigate(action)
+        }
+
+        binding.lifecycleOwner = this
+        binding.sharedViewModel = mSharedViewModel
+        binding.notesRecyclerview.adapter = mAdapter
+
+        mSharedViewModel.allNotes.observe(this.viewLifecycleOwner) { notes ->
+            val decryptedNotes = mSharedViewModel.decryptAllNotes(notes)
+            decryptedNotes.let {
+                mAdapter.submitList(it)
+            }
+        }
+
         return binding.root
     }
 
@@ -42,18 +61,12 @@ class NotesFragment : Fragment() {
         //Hide back arrow from ActionBar
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
-        _binding?.note?.movementMethod = ScrollingMovementMethod()
-
-        binding.noteCard.setOnClickListener {
-            findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToEditNoteFragment())
-        }
-
-        binding.buttonEditNote.setOnClickListener {
-            findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToEditNoteFragment())
-        }
-
-        binding.buttonChangePassword.setOnClickListener {
-            findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToChangePasswordFragment())
+        binding.floatingButton.setOnClickListener {
+            val action = NotesFragmentDirections.actionNotesFragmentToEditNoteFragment(
+                getString(R.string.add_note),
+                -1
+            )
+            findNavController().navigate(action)
         }
 
         //close App when press Back Button (clear from Recent Tasks)
