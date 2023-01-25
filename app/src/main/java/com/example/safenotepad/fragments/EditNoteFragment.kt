@@ -41,7 +41,8 @@ class EditNoteFragment : Fragment() {
         val noteId = navigationArgs.noteId
         if (noteId > 0) {
             mSharedViewModel.getNoteById(noteId).observe(this.viewLifecycleOwner) { selectedNote ->
-                note = selectedNote
+                val decryptedNoteText = mSharedViewModel.getDecryptedNote(selectedNote)
+                note = Note(id = noteId, text = decryptedNoteText)
                 bindEditNote(note)
             }
         } else {
@@ -109,32 +110,14 @@ class EditNoteFragment : Fragment() {
         findNavController().navigateUp()
     }
 
-    private fun saveNote(){
-        val newNoteString = binding.noteEditText.text.toString() //newNote.value
-        if (newNoteString != null) {
-            val cipher = mSharedViewModel.getCipherForEncryption()
-            encryptAndSave(newNoteString, cipher)
-            mSharedViewModel.noteTextShared = newNoteString
-            findNavController().navigate(
-                EditNoteFragmentDirections.actionEditNoteFragmentToNotesFragment())
-        }
-    }
-
-    private fun encryptAndSave(note: String, cipher: Cipher) {
-        val encryptedNote = mSharedViewModel.getEncryptedNote(note, cipher)
-        val encryptedSharedPreferences = EncryptedSharedPreferencesDataStorage(requireContext())
-        encryptedSharedPreferences.saveNote(encryptedNote)
-        encryptedSharedPreferences.saveIv(cipher.iv)
-    }
-
     private fun createConfirmAlertForDeleteButton(context: Context){
         AlertDialog.Builder(requireActivity())
             .setTitle(context.resources.getString(R.string.confirm_delete_button))
-            .setPositiveButton("Yes") { _, _ ->
-                Toast.makeText(context, "Deleting note...", Toast.LENGTH_LONG).show()
+            .setPositiveButton(context.resources.getString(R.string.yes)) { _, _ ->
+                Toast.makeText(context, context.resources.getString(R.string.deleting_note), Toast.LENGTH_LONG).show()
                 deleteNote()
             }
-            .setNegativeButton("No", null)
+            .setNegativeButton(context.resources.getString(R.string.no), null)
             .setCancelable(false)
             .create()
             .show()

@@ -11,6 +11,7 @@ import android.view.MenuItem
 import androidx.navigation.NavController
 import androidx.navigation.ui.onNavDestinationSelected
 import com.example.safenotepad.databinding.ActivityMainBinding
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {

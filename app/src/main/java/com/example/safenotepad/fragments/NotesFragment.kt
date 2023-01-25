@@ -43,7 +43,8 @@ class NotesFragment : Fragment() {
         binding.notesRecyclerview.adapter = mAdapter
 
         mSharedViewModel.allNotes.observe(this.viewLifecycleOwner) { notes ->
-            notes.let {
+            val decryptedNotes = mSharedViewModel.decryptAllNotes(notes)
+            decryptedNotes.let {
                 mAdapter.submitList(it)
             }
         }
