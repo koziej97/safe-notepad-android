@@ -1,5 +1,0 @@
-update demo.gif in README.md
-
-fix bug with not working Koin on real device
-
-merge with develop then master

@@ -2,7 +2,7 @@
 
 Notepad Android App secured by several cryptographic techniques.
 
-The application allows you to save notes securely. You can access the app only by using the password or biometric authentication. The notes are saved using several cryptographic techniques, so it's also protected from reading the notes directly from app files. If the app is onPause state, the user will be automatically taken to the password screen - to save the notes from leaving the application minimized.
+The application allows you to securely save notes. You can access the app only by using the password or biometric authentication. The notes are saved using several cryptographic techniques, so they are also protected from reading the notes directly from the app files. If the app is onPause state, the user will be automatically taken to the password screen - to protect the notes from leaving the application minimized.
 
 ### What I use in this app:
 - MVVM Architecture Pattern
