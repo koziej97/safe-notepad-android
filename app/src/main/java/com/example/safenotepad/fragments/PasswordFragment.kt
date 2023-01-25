@@ -1,6 +1,8 @@
 package com.example.safenotepad.fragments
 
+import android.content.Context
 import android.os.Bundle
+import android.text.InputType
 import android.text.method.PasswordTransformationMethod
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,23 +12,20 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.biometric.BiometricPrompt
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.*
 import com.example.safenotepad.biometricAuthentication.BiometricAuthUtil
 import com.example.safenotepad.data.sharedPreferences.EncryptedSharedPreferencesDataStorage
 import com.example.safenotepad.databinding.FragmentPasswordBinding
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class PasswordFragment : Fragment() {
     private var _binding: FragmentPasswordBinding? = null
     private val binding get() = _binding!!
-    private val mSharedViewModel: SharedViewModel by activityViewModels {
-        SharedViewModelFactory(
-            (activity?.application as SafeNotepadApplication).database.noteDao()
-        )
-    }
+    private val mSharedViewModel by sharedViewModel<SharedViewModel>()
+    private val encryptedSharedPreferences by inject<EncryptedSharedPreferencesDataStorage>()
     val typedPassword =  MutableLiveData<String>()
 
     override fun onCreateView(
@@ -43,27 +42,27 @@ class PasswordFragment : Fragment() {
             passwordFragment = this@PasswordFragment
             sharedViewModel = mSharedViewModel
         }
-        val encryptedSharedPreferences = EncryptedSharedPreferencesDataStorage(requireContext())
+
         val correctPassword = encryptedSharedPreferences.loadPassword()
         if (correctPassword != null) {
             mSharedViewModel.correctPassword = correctPassword
         }
         else {
-            createAlertForFirstPassword(encryptedSharedPreferences)
+            context?.let { createAlertForFirstPassword(it) }
         }
 
         binding.buttonPassword.setOnClickListener {
-            checkTypedPassword(encryptedSharedPreferences)
+            mSharedViewModel.checkTypedPassword(typedPassword.value)
             if (mSharedViewModel.isTypedPasswordCorrect){
                 findNavController().navigate(PasswordFragmentDirections.actionPasswordFragmentToNotesFragment())
             }
             else {
-                Toast.makeText(context, "Wrong Password!", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, context?.resources?.getString(R.string.wrong_password), Toast.LENGTH_LONG).show()
             }
         }
 
         binding.buttonBiometric.setOnClickListener {
-            openBiometricAuthDialog(encryptedSharedPreferences)
+            openBiometricAuthDialog()
             mSharedViewModel.isBiometricAuthSucceeded.observe(viewLifecycleOwner) {
                 if (mSharedViewModel.isBiometricAuthSucceeded.value == true) {
                     findNavController()
@@ -79,22 +78,23 @@ class PasswordFragment : Fragment() {
         _binding = null
     }
 
-    private fun createAlertForFirstPassword(encryptedSharedPreferences: EncryptedSharedPreferencesDataStorage){
+    private fun createAlertForFirstPassword(context: Context){
         val firstPasswordEditText = EditText(activity)
-        firstPasswordEditText.hint = "Type your password"
+        firstPasswordEditText.hint = context.resources.getString(R.string.type_your_password)
+        firstPasswordEditText.inputType = InputType.TYPE_CLASS_TEXT
         firstPasswordEditText.transformationMethod = PasswordTransformationMethod.getInstance()
         AlertDialog.Builder(requireActivity())
-            .setTitle("Set up your password")
+            .setTitle(context.resources.getString(R.string.set_up_your_password))
             .setView(firstPasswordEditText)
             .setPositiveButton("OK") { _, _ ->
                 val correctPassword = firstPasswordEditText.text.toString()
-                if (correctPassword != ""){
-                    saveNewPassword(correctPassword, encryptedSharedPreferences)
-                    Toast.makeText(context, "Now type your set password to get access", Toast.LENGTH_LONG).show()
+                if (correctPassword.isNotEmpty()){
+                    mSharedViewModel.saveFirstPassword(correctPassword)
+                    Toast.makeText(context, context.resources.getString(R.string.type_your_password_to_get_access), Toast.LENGTH_LONG).show()
                 }
                 else {
-                    Toast.makeText(context, "You MUST set a password!", Toast.LENGTH_LONG).show()
-                    createAlertForFirstPassword(encryptedSharedPreferences)
+                    Toast.makeText(context, context.resources.getString(R.string.you_must_set_a_password), Toast.LENGTH_LONG).show()
+                    createAlertForFirstPassword(context)
                 }
             }
             .setCancelable(false)
@@ -102,50 +102,11 @@ class PasswordFragment : Fragment() {
             .show()
     }
 
-    private fun saveNewPassword(correctPassword: String,
-                                encryptedSharedPreferences: EncryptedSharedPreferencesDataStorage
-    ){
-        val salt = mSharedViewModel.generateSalt()
-        encryptedSharedPreferences.saveSalt(salt)
-        val hashedPassword = mSharedViewModel.hashPassword(correctPassword, salt)
-        encryptedSharedPreferences.savePassword(hashedPassword)
-        mSharedViewModel.correctPassword = hashedPassword
-    }
-
-    private fun checkTypedPassword(encryptedSharedPreferences: EncryptedSharedPreferencesDataStorage){
-        val typedPasswordString = typedPassword.value
-        if (typedPasswordString != null){
-            val salt = encryptedSharedPreferences.loadSalt()
-            val hashedPassword =
-                salt?.let { mSharedViewModel.hashPassword(typedPasswordString, it) }
-            if (hashedPassword == mSharedViewModel.correctPassword){
-                val noteTextEncrypted = encryptedSharedPreferences.loadNote()
-                val iv = encryptedSharedPreferences.loadIv()
-                mSharedViewModel.getDecryptedNote(noteTextEncrypted, iv)
-                mSharedViewModel.isTypedPasswordCorrect = true
-            }
-        }
-    }
-
-    private fun openBiometricAuthDialog(encryptedSharedPreferences: EncryptedSharedPreferencesDataStorage){
-        val biometricAuthUtil = BiometricAuthUtil(requireContext(), mSharedViewModel)
-        val noteTextEncrypted = encryptedSharedPreferences.loadNote()
-        if (noteTextEncrypted != "Empty note"){
-            val iv = encryptedSharedPreferences.loadIv()
-            val cryptoObject = BiometricPrompt.CryptoObject(
-                mSharedViewModel.getCipherForDecryption(iv)
-            )
-            biometricAuthUtil.showBiometricPrompt(
-                activity = requireActivity() as AppCompatActivity,
-                cryptoObject = cryptoObject
-            )
-        }
-        else {
-            mSharedViewModel.noteTextShared = noteTextEncrypted
-            biometricAuthUtil.showBiometricPrompt(
-                activity = requireActivity() as AppCompatActivity,
-                cryptoObject = null
-            )
-        }
+    private fun openBiometricAuthDialog(){
+        val biometricAuthUtil = context?.let { BiometricAuthUtil(it, mSharedViewModel) }
+        biometricAuthUtil?.showBiometricPrompt(
+            activity = requireActivity() as AppCompatActivity,
+            cryptoObject = null
+        )
     }
 }

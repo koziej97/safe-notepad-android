@@ -11,15 +11,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.databinding.FragmentEditNoteBinding
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.navArgs
 import com.example.safenotepad.R
-import com.example.safenotepad.SafeNotepadApplication
 import com.example.safenotepad.data.sharedPreferences.EncryptedSharedPreferencesDataStorage
 import com.example.safenotepad.SharedViewModel
-import com.example.safenotepad.SharedViewModelFactory
 import com.example.safenotepad.data.database.Note
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import javax.crypto.Cipher
 
 class EditNoteFragment : Fragment() {
@@ -29,11 +26,7 @@ class EditNoteFragment : Fragment() {
     lateinit var note: Note
     private val navigationArgs: EditNoteFragmentArgs by navArgs()
 
-    private val mSharedViewModel: SharedViewModel by activityViewModels {
-        SharedViewModelFactory(
-            (activity?.application as SafeNotepadApplication).database.noteDao()
-        )
-    }
+    private val mSharedViewModel by sharedViewModel<SharedViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +41,8 @@ class EditNoteFragment : Fragment() {
         val noteId = navigationArgs.noteId
         if (noteId > 0) {
             mSharedViewModel.getNoteById(noteId).observe(this.viewLifecycleOwner) { selectedNote ->
-                note = selectedNote
+                val decryptedNoteText = mSharedViewModel.getDecryptedNote(selectedNote)
+                note = Note(id = noteId, text = decryptedNoteText)
                 bindEditNote(note)
             }
         } else {
@@ -116,32 +110,14 @@ class EditNoteFragment : Fragment() {
         findNavController().navigateUp()
     }
 
-    private fun saveNote(){
-        val newNoteString = binding.noteEditText.text.toString() //newNote.value
-        if (newNoteString != null) {
-            val cipher = mSharedViewModel.getCipherForEncryption()
-            encryptAndSave(newNoteString, cipher)
-            mSharedViewModel.noteTextShared = newNoteString
-            findNavController().navigate(
-                EditNoteFragmentDirections.actionEditNoteFragmentToNotesFragment())
-        }
-    }
-
-    private fun encryptAndSave(note: String, cipher: Cipher) {
-        val encryptedNote = mSharedViewModel.getEncryptedNote(note, cipher)
-        val encryptedSharedPreferences = EncryptedSharedPreferencesDataStorage(requireContext())
-        encryptedSharedPreferences.saveNote(encryptedNote)
-        encryptedSharedPreferences.saveIv(cipher.iv)
-    }
-
     private fun createConfirmAlertForDeleteButton(context: Context){
         AlertDialog.Builder(requireActivity())
             .setTitle(context.resources.getString(R.string.confirm_delete_button))
-            .setPositiveButton("Yes") { _, _ ->
-                Toast.makeText(context, "Deleting note...", Toast.LENGTH_LONG).show()
+            .setPositiveButton(context.resources.getString(R.string.yes)) { _, _ ->
+                Toast.makeText(context, context.resources.getString(R.string.deleting_note), Toast.LENGTH_LONG).show()
                 deleteNote()
             }
-            .setNegativeButton("No", null)
+            .setNegativeButton(context.resources.getString(R.string.no), null)
             .setCancelable(false)
             .create()
             .show()

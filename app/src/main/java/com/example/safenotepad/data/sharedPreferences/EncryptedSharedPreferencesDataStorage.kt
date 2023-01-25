@@ -31,18 +31,6 @@ class EncryptedSharedPreferencesDataStorage(val context: Context) :
         return super.loadString("Password")
     }
 
-    fun saveNote(text: String) {
-        val key = "Note"
-        super.saveString(key ,text)
-    }
-
-    fun loadNote(): String? {
-        if (!sharedPreferencesEncrypted.contains("Note")){
-            return "Empty note"
-        }
-        return super.loadString("Note")
-    }
-
     fun saveSalt(salt: ByteArray) {
         val key = "Salt"
         super.saveByteArray(key, salt)
@@ -52,12 +40,15 @@ class EncryptedSharedPreferencesDataStorage(val context: Context) :
         return super.loadByteArray("Salt")
     }
 
-    fun saveIv(iv: ByteArray) {
-        val key = "IV"
+    fun saveIv(key: String, iv: ByteArray) {
         super.saveByteArray(key, iv)
     }
 
-    fun loadIv(): ByteArray? {
-        return super.loadByteArray("IV")
+    fun loadIv(key: String): ByteArray? {
+        return super.loadByteArray(key)
+    }
+
+    fun removeIv(key: String) {
+        return super.removeString(key)
     }
 }

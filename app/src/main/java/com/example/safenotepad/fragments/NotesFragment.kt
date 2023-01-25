@@ -4,19 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import com.example.safenotepad.R
-import com.example.safenotepad.SafeNotepadApplication
 import com.example.safenotepad.SharedViewModel
-import com.example.safenotepad.SharedViewModelFactory
 import com.example.safenotepad.databinding.FragmentNotesBinding
 import com.example.safenotepad.recyclerView.NotesListAdapter
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class NotesFragment : Fragment() {
 
@@ -24,11 +20,7 @@ class NotesFragment : Fragment() {
     private var _binding: FragmentNotesBinding? = null
     private val binding get() = _binding!!
 
-    private val mSharedViewModel: SharedViewModel by activityViewModels {
-        SharedViewModelFactory(
-            (activity?.application as SafeNotepadApplication).database.noteDao()
-        )
-    }
+    private val mSharedViewModel by sharedViewModel<SharedViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +43,8 @@ class NotesFragment : Fragment() {
         binding.notesRecyclerview.adapter = mAdapter
 
         mSharedViewModel.allNotes.observe(this.viewLifecycleOwner) { notes ->
-            notes.let {
+            val decryptedNotes = mSharedViewModel.decryptAllNotes(notes)
+            decryptedNotes.let {
                 mAdapter.submitList(it)
             }
         }

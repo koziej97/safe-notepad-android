@@ -91,9 +91,7 @@ object CryptographyUtil {
         val keyGenParams = buildKeyGenParameter()
         val keyGenerator = getKeyGenerator()
         keyGenerator.init(keyGenParams)
-        val myKey = keyGenerator.generateKey()
-        keyStore.setKeyEntry(YOUR_SECRET_KEY_NAME, myKey, null, null)
-        return myKey
+        return keyGenerator.generateKey()
     }
 
     private fun buildKeyGenParameter(): KeyGenParameterSpec {

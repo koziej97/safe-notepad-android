@@ -26,4 +26,9 @@ abstract class EncryptedSharedPreferencesAbstract {
         val text = loadString(key)
         return Base64.decode(text, Base64.DEFAULT)
     }
+
+    fun removeString(key: String) {
+        editor.remove(key)
+        editor.apply()
+    }
 }

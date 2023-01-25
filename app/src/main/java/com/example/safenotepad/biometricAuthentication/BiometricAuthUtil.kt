@@ -4,15 +4,15 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import com.example.safenotepad.R
 import com.example.safenotepad.SharedViewModel
-import com.example.safenotepad.data.sharedPreferences.EncryptedSharedPreferencesDataStorage
 
 class BiometricAuthUtil (val context: Context, val mSharedViewModel: SharedViewModel) {
 
     fun showBiometricPrompt(
-        title: String = "Biometric Authentication",
-        subtitle: String = "Enter biometric credentials to proceed.",
-        description: String = "Input your Fingerprint to ensure it's you!",
+        title: String = context.resources.getString(R.string.biometric_authentication),
+        subtitle: String = context.resources.getString(R.string.enter_biometric_credentials),
+        description: String = context.resources.getString(R.string.input_your_fingerprint),
         activity: AppCompatActivity,
         cryptoObject: BiometricPrompt.CryptoObject? = null
     ) {
@@ -42,7 +42,7 @@ class BiometricAuthUtil (val context: Context, val mSharedViewModel: SharedViewM
             .setTitle(title)
             .setSubtitle(subtitle)
             .setDescription(description)
-            .setNegativeButtonText("Cancel")
+            .setNegativeButtonText(context.resources.getString(R.string.cancel))
             .build()
     }
 
@@ -51,12 +51,6 @@ class BiometricAuthUtil (val context: Context, val mSharedViewModel: SharedViewM
         val callback = object : BiometricPrompt.AuthenticationCallback() {
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                 super.onAuthenticationSucceeded(result)
-                result.cryptoObject?.cipher?.let { it ->
-                    val encryptedSharedPreferences = EncryptedSharedPreferencesDataStorage(context)
-                    val noteTextEncrypted = encryptedSharedPreferences.loadNote()
-                    val decryptedMessage = mSharedViewModel.getDecryptedNote(noteTextEncrypted, it)
-                    mSharedViewModel.noteTextShared = decryptedMessage
-                }
                 mSharedViewModel.isBiometricAuthSucceeded.value = true
             }
         }
