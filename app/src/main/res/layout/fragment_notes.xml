@@ -6,10 +6,10 @@
     <data>
         <variable
             name="notesFragment"
-            type="com.example.safenotepad.fragments.NotesFragment" />
+            type="com.lukaszkoziej.safenotepad.fragments.NotesFragment" />
         <variable
             name="sharedViewModel"
-            type="com.example.safenotepad.SharedViewModel" />
+            type="com.lukaszkoziej.safenotepad.SharedViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_margin="16dp"
-            android:backgroundTint="@color/purple_200"
+            android:backgroundTint="?android:colorPrimary"
             android:contentDescription="@string/floating_button_description"
             android:src="@drawable/ic_baseline_add_24"
             app:borderWidth="0dp"
