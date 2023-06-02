@@ -6,10 +6,10 @@
     <data>
         <variable
             name="notesFragment"
-            type="com.example.safenotepad.fragments.NotesFragment" />
+            type="com.lukaszkoziej.safenotepad.fragments.NotesFragment" />
         <variable
             name="sharedViewModel"
-            type="com.example.safenotepad.SharedViewModel" />
+            type="com.lukaszkoziej.safenotepad.SharedViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
