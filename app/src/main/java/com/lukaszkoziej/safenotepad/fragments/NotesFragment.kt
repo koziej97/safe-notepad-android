@@ -16,7 +16,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class NotesFragment : Fragment() {
 
-    lateinit var mAdapter: NotesListAdapter
+    private lateinit var mAdapter: NotesListAdapter
     private var _binding: FragmentNotesBinding? = null
     private val binding get() = _binding!!
 
@@ -75,9 +75,13 @@ class NotesFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
 }
