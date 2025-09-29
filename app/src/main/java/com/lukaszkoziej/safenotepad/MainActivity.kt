@@ -14,7 +14,7 @@ import com.lukaszkoziej.safenotepad.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var navController: NavController
+    private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.hide()
 
         //Responsible for the navigation arrow on the AppBar
         navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -49,15 +48,4 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
     }
-
-    override fun onPause(){
-        super.onPause()
-        finish()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        startActivity(intent)
-    }
-
 }

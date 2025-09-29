@@ -3,23 +3,30 @@ package com.lukaszkoziej.safenotepad.fragments
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.MenuProvider
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.lukaszkoziej.safenotepad.databinding.FragmentEditNoteBinding
 import androidx.navigation.fragment.navArgs
 import com.lukaszkoziej.safenotepad.R
 import com.lukaszkoziej.safenotepad.SharedViewModel
 import com.lukaszkoziej.safenotepad.data.database.Note
+import com.lukaszkoziej.safenotepad.databinding.FragmentEditNoteBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class EditNoteFragment : Fragment() {
     private var _binding: FragmentEditNoteBinding? = null
     private val binding get() = _binding!!
+
+    private var originalNoteContent: String = ""
 
     lateinit var note: Note
     private val navigationArgs: EditNoteFragmentArgs by navArgs()
@@ -42,15 +49,32 @@ class EditNoteFragment : Fragment() {
                 val decryptedNoteText = mSharedViewModel.getDecryptedNote(selectedNote)
                 note = Note(id = noteId, text = decryptedNoteText)
                 bindEditNote(note)
+                originalNoteContent = decryptedNoteText
             }
         } else {
             bindAddNote()
+            originalNoteContent = ""
         }
+
+        requireActivity().addMenuProvider(EditNoteMenuProvider(), viewLifecycleOwner)
+        setupOnBackPressedCallback()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun setupOnBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                handleNavigationAttempt()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+    }
+
+    private fun handleNavigationAttempt() {
+        if (isNoteContentChanged()) {
+            showUnsavedChangesDialog(requireContext())
+        } else {
+            findNavController().navigateUp()
+        }
     }
 
     private fun bindEditNote(note: Note) {
@@ -70,11 +94,18 @@ class EditNoteFragment : Fragment() {
 
     private fun updateNote() {
         if (isEntryValid()) {
-            mSharedViewModel.updateNote(note.id, binding.noteEditText.text.toString())
+            val newContent = binding.noteEditText.text.toString()
+            mSharedViewModel.updateNote(note.id, newContent)
+            originalNoteContent = newContent
             val action = EditNoteFragmentDirections.actionEditNoteFragmentToNotesFragment()
             findNavController().navigate(action)
         }
     }
+
+    private fun isNoteContentChanged(): Boolean {
+        return binding.noteEditText.text.toString().trim() != originalNoteContent.trim()
+    }
+
 
     private fun bindAddNote() {
         _binding?.apply {
@@ -93,7 +124,9 @@ class EditNoteFragment : Fragment() {
 
     private fun addNewNote() {
         if (isEntryValid()) {
-            mSharedViewModel.addNewNote(binding.noteEditText.text.toString())
+            val newContent = binding.noteEditText.text.toString()
+            mSharedViewModel.addNewNote(newContent)
+            originalNoteContent = newContent
             val action = EditNoteFragmentDirections.actionEditNoteFragmentToNotesFragment()
             findNavController().navigate(action)
         }
@@ -121,4 +154,49 @@ class EditNoteFragment : Fragment() {
             .show()
     }
 
+    private fun showUnsavedChangesDialog(context: Context) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(context.resources.getString(R.string.unsaved_changes))
+            .setMessage(context.resources.getString(R.string.save_your_changes_before_exiting))
+            .setPositiveButton(context.resources.getString(R.string.save)) { _, _ ->
+                if (isEntryValid()) {
+                    if (::note.isInitialized && navigationArgs.noteId > 0) {
+                        updateNote()
+                    } else {
+                        addNewNote()
+                    }
+                } else {
+                    findNavController().navigateUp()
+                }
+            }
+            .setNegativeButton(context.resources.getString(R.string.discard)) { _, _ ->
+                findNavController().navigateUp()
+            }
+            .setNeutralButton(context.resources.getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private inner class EditNoteMenuProvider : MenuProvider {
+
+        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {}
+
+        override fun onPrepareMenu(menu: Menu) {
+            menu.clear()
+        }
+
+        override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+            if (menuItem.itemId == android.R.id.home) {
+                handleNavigationAttempt()
+                return true
+            }
+            return false
+        }
+    }
 }

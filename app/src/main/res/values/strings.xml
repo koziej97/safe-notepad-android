@@ -10,7 +10,6 @@
     <string name="add_note">Add Note</string>
     <string name="change_password">Change password</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="save_cahnges">Save changes</string>
     <string name="save_changes">Save changes</string>
     <string name="message_change_password">Please enter your new password below</string>
     <string name="new_password">New password</string>
@@ -35,4 +34,8 @@
     <string name="about_app_text">The application allows you to securely save notes. You can access the app only by using the password or biometric authentication. The notes are saved using several cryptographic techniques, so they are also protected from reading the notes directly from the app files. The notes are only stored locally on your smartphone and the app doesn\'t connect to the Internet, however I am not responsible for the security of the data you put in this application.</string>
     <string name="about_app_creator">Safe Notepad\n created by Łukasz Koziej</string>
     <string name="about_app_contact">If you found any issues or bugs using this app you can contact me via email:\nlukasz.koziej97@gmail.com</string>
+    <string name="unsaved_changes">Unsaved changes</string>
+    <string name="save_your_changes_before_exiting">Do you want to save your changes before exiting?</string>
+    <string name="save">Save</string>
+    <string name="discard">Discard</string>
 </resources>
