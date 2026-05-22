@@ -11,6 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -58,6 +61,13 @@ class EditNoteFragment : Fragment() {
 
         requireActivity().addMenuProvider(EditNoteMenuProvider(), viewLifecycleOwner)
         setupOnBackPressedCallback()
+
+        // Ensure bottom buttons sit above the navigation bar
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val sysBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            binding.root.updatePadding(bottom = sysBars.bottom)
+            insets
+        }
     }
 
     private fun setupOnBackPressedCallback() {

@@ -4,6 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -69,6 +73,8 @@ class NotesFragment : Fragment() {
             findNavController().navigate(action)
         }
 
+        handleEdgeToEdge()
+
         //close App when press Back Button (clear from Recent Tasks)
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             activity?.finishAndRemoveTask()
@@ -83,5 +89,19 @@ class NotesFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun handleEdgeToEdge() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val sysBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            binding.notesRecyclerview.updatePadding(bottom = sysBars.bottom)
+
+            val lp = binding.floatingButton.layoutParams as MarginLayoutParams
+            lp.bottomMargin = sysBars.bottom + resources.getDimensionPixelSize(R.dimen.fab_margin)
+            binding.floatingButton.layoutParams = lp
+
+            insets
+        }
     }
 }
